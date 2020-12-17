@@ -1,0 +1,62 @@
+Description: >
+  Ybrahin Martinez - SMS Payment Lightning Network
+
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+Resources:
+
+  SMSpaymentRolIAM:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${EnvironmentName}-SMSpayment-Role"
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+
+  SMSpaymentPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${EnvironmentName}-SMSpayment-Policies"
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: 
+          - "ec2:DescribeAddresses"
+          - "ec2:AllocateAddress"
+          - "ec2:DescribeInstances"
+          - "ec2:AssociateAddress"
+          - "ssm:Get*"
+          - "s3:Get*"
+          Resource: '*'
+      Roles:
+      - !Ref SMSpaymentRolIAM
+      
+  SMSpaymentInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref SMSpaymentRolIAM
+
+Outputs:
+  UdagramRol:
+    Description: Rol
+    Value: !Ref SMSpaymentRolIAM
+    Export:
+      Name: !Sub ${EnvironmentName}-SMSpaymentRolIAM
+
+  InstanceProfile:
+    Description: Instance profile of SMSpaymentRolIAM Rol
+    Value: !Ref SMSpaymentInstanceProfile
+    Export:
+      Name: !Sub ${EnvironmentName}-SMSpayment
