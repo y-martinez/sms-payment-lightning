@@ -1,0 +1,12 @@
+site_name: payment-engine
+site_description: Payment system with Lightning Network
+repo_url: https://github.com/y-martinez/sms-payment-ln
+site_dir: site
+copyright: Copyright &copy; 2020, <a href="https://github.com/y-martinez">y-martinez</a>.
+dev_addr: 0.0.0.0:8001
+
+nav:
+  - Home: 'index.md'
+  - API:
+    - Authentication: 'api/authentication.md'
+    - Users: 'api/users.md'
