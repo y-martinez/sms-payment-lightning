@@ -1,0 +1,116 @@
+Description: >
+  Ybrahin Martinez - SMS Payment Lightning Network
+
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  InstanceType:
+    Description: The instance type to use for the bastion host
+    Type: String
+    Default: t3.micro
+
+  InstanceAMI: 
+    Description: AMI of host
+    Type: String
+    Default: ami-07dd19a7900a1f049
+
+  SSHLocation:
+    Description: Network allowed to connect using ssh to bastion host in public subnet.
+    Default: 0.0.0.0/0
+    Type: String
+
+  KeyName:
+    Description: Keypair for Linux host
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: udagramBastionKey
+
+Resources:
+
+  HostSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow ssh connection to host (basic Jenkins security group)
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: udp
+          FromPort: 8333
+          ToPort: 8333
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: udp
+          FromPort: 18333
+          ToPort: 18333
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: udp
+          FromPort: 9735
+          ToPort: 9735
+          CidrIp: !Ref SSHLocation
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: !Ref SSHLocation
+      Tags:
+        - Key: name
+          Value: !Sub ${EnvironmentName} SecGroup Jenkins Host
+
+  EIPHost:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+
+  InstanceHostEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref InstanceAMI
+      KeyName: !Ref KeyName
+      IamInstanceProfile:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-SMSpayment
+      SecurityGroupIds:
+        - !Ref HostSecGroup
+      InstanceType: !Ref InstanceType
+      SubnetId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-PUBLIC-NET"
+      BlockDeviceMappings:
+      - DeviceName: "/dev/sdk"
+        Ebs:
+          VolumeSize: '100'
+      UserData:
+        Fn::Base64: 
+          Fn::Sub:
+            - |
+              #!/bin/bash
+              
+              echo "Installing dependencies"
+              apt-get update
+              apt-get install -y apt-transport-https ca-certificates curl software-properties-common unzip build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libdb-dev libdb++-dev libzmq3-dev
+
+              
+              echo "Installing aws-cli"
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip -qq awscliv2.zip
+              ./aws/install
+              instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+              aws ec2 associate-address --instance-id $instance_id --allow-reassociation  --region ${AWS::Region} --allocation-id ${EIPAllocation}
+            - EIPAllocation: !GetAtt EIPHost.AllocationId
+
+Outputs:
+
+  HostPublicIPAddress:
+    Description: Host public IP
+    Value: !Ref EIPHost
+    Export:
+      Name: !Sub ${EnvironmentName}-PUBLIC-ACCESS-IP
+  
