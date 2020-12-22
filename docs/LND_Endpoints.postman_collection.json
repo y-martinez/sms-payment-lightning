@@ -1,0 +1,750 @@
+{
+	"info": {
+		"_postman_id": "7e4a75d3-d4c4-4610-b830-1df23db10255",
+		"name": "LND Endopoints - SMS Payment LN",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Obtener informacion del nodo LN",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/getinfo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"getinfo"
+					]
+				},
+				"description": "Devuelve información general sobre el nodo Lightning, incluida su clave pública de identidad, alias, las cadenas a las que está conectado e información sobre la cantidad de canales abiertos + pendientes."
+			},
+			"response": []
+		},
+		{
+			"name": "Generar una nueva dirección de la wallet",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/newaddress",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"newaddress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generar una nueva seed para la wallet",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/newaddress",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"newaddress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Desbloquear wallet por clave",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"wallet_password\":\"QWRyaWFuOTM5MzU2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/unlockwallet",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"unlockwallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Iniciar wallet por seed",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"wallet_password\":\"QWRyaWFuOTM5MzU2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/unlockwallet",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"unlockwallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información del grafo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/graph/info",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"graph",
+						"info"
+					]
+				},
+				"description": "Devuelve algunas estadísticas básicas sobre el grafo de canal conocido desde el punto de vista del nodo."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de una solicitud de pago",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/graph/info",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"graph",
+						"info"
+					]
+				},
+				"description": "Toma un payment request codificado e intenta decodificarlo, devolviendo una descripción completa de las condiciones codificadas dentro de la solicitud de pago."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de los canales pendientes",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels/pending",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels",
+						"pending"
+					]
+				},
+				"description": "Devuelve una lista de todos los canales que actualmente se consideran \"pendientes\". Un canal está pendiente si ha finalizado el flujo de trabajo de financiación y está a la espera de confirmaciones para la financiación txn, o está en proceso de cierre, ya sea iniciado de forma cooperativa o no cooperativa."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de los canales cerrados",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels/closed",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels",
+						"closed"
+					]
+				},
+				"description": "Devuelve una descripción de todos los canales cerrados en los que este nodo participó."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de los pagos hechos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"payments"
+					]
+				},
+				"description": "Devuelve una lista de todos los pagos efectuados."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de las transacciones realizadas",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/transactions",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"transactions"
+					]
+				},
+				"description": "Devuelve una lista que describe todas las transacciones conocidas relevantes para la wallet."
+			},
+			"response": []
+		},
+		{
+			"name": "Realizar pago a una address por Bitcoin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"addr\": \"tb1qqq4wx3z96yx9elwfwf7x32k6c0axsw9gr9uaq0\",\n  \"amount\": \"10000\",\n  \"target_conf\": 0,\n  \"label\":\"Pago de prueba\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/transactions",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"transactions"
+					]
+				},
+				"description": "Devuelve una lista que describe todas las transacciones conocidas relevantes para la wallet."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de las facturas",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/invoices",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"invoices"
+					]
+				},
+				"description": "Devuelve una lista de todas las facturas almacenadas actualmente en la base de datos. Se ignoran todas las facturas de depuración activas. Tiene soporte completo para respuestas paginadas, lo que permite a los usuarios consultar facturas específicas a través de su add_index. Esto se puede hacer usando los campos first_index_offset o last_index_offset incluidos en la respuesta como index_offset de la siguiente solicitud. De forma predeterminada, se devolverán las primeras 100 facturas creadas. La paginación hacia atrás también se admite a través del flag reversed."
+			},
+			"response": []
+		},
+		{
+			"name": "Generar una orden de factura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memo\":\"Factura de prueba\",\n    \"value\":\"40000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/invoices",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"invoices"
+					]
+				},
+				"description": "Intenta agregar una nueva factura a la base de datos de facturas. Se rechazan las facturas duplicadas, por lo que todas las facturas deben tener una preimagen de pago única."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de los canales",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels"
+					]
+				},
+				"description": "Devuelve una descripción de todos los canales abiertos en los que este nodo participa"
+			},
+			"response": []
+		},
+		{
+			"name": "Cerrar un canal de pago",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels/e3e67246d8d85036d8de8a60713dbc901301dfe737d361032b833b37e6836c5a/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels",
+						"e3e67246d8d85036d8de8a60713dbc901301dfe737d361032b833b37e6836c5a",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información del grafo de un nodo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/graph/node/{{pubKey}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"graph",
+						"node",
+						"{{pubKey}}"
+					]
+				},
+				"description": "Devuelve la última información de canal anunciada, agregada y autenticada para el nodo especificado identificado por su clave pública."
+			},
+			"response": []
+		},
+		{
+			"name": "Crear un canal de pago",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"node_pubkey_string\":\"030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516\",\n    \"local_funding_amount\":\"5000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels"
+					]
+				},
+				"description": "Versión sincrónica de la llamada RPC de OpenChannel. Esta llamada está destinada a ser consumida por los clientes del proxy REST. Al igual que con todas las demás llamadas de sincronización, todos los segmentos de bytes deben completarse como cadenas codificadas en hexadecimal."
+			},
+			"response": []
+		},
+		{
+			"name": "Crear un canal de pago V2 (TEST)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"node_pubkey_string\":\"030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516\",\n    \"local_funding_amount\":\"5000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Realizar pago de una factura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"payment_request\":\"lntb5u1p0a6adapp5a7rmr5sc7qwm6zg7qe6p4ry6taqs6lv30hzu7da7zvpsf07yqe8qdqqcqzpgxqyz5vqsp5z6wukg7lednhhaemecpmqhd4ucwldxq0aw90q6s35qja7yvqc05s9qyyssq0ahfyg9ushw2gwn7v259wjq56yll5xj6peek8hp845e0caep7lly6p4f85ny5gqc073dt8wk3q9g64wyymshh89x2yw97rkfhwqcq8gpfw0jqn\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/channels/transactions",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"channels",
+						"transactions"
+					]
+				},
+				"description": "Versión sincrónica sin transmisión de SendPayment. Esta RPC está destinada a ser consumida por clientes del proxy REST. Además, esta RPC espera que la clave pública del destino y el hash de pago (si lo hay) se codifiquen como cadenas hexadecimales."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información de los fondos de los canales",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/balance/channels",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"balance",
+						"channels"
+					]
+				},
+				"description": "Devuelve un informe sobre los fondos totales en todos los canales abiertos, categorizados en saldos locales / remotos, locales pendientes / remotos y locales / remotos sin liquidar."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener información el balance de la wallet",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/balance/blockchain",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"balance",
+						"blockchain"
+					]
+				},
+				"description": "Devuelve el total de salidas no gastadas (confirmadas y no confirmadas), todas las salidas confirmadas no gastadas y todas las salidas no gastadas no confirmadas bajo el control de la wallet."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener los peer conectados activos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/peers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"peers"
+					]
+				},
+				"description": "Devuelve una lista detallada de todos los pares actualmente activos."
+			},
+			"response": []
+		},
+		{
+			"name": "Conectarse a un peer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"type": "text",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"addr\":{\"pubkey\":\"03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003\",\"host\":\"3.16.119.191:9735\"},\"perm\":true,\"timeout\":\"50\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/peers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"peers"
+					]
+				},
+				"description": "Intenta establecer una conexión con un par remoto. Esto es a nivel de red y se utiliza para la comunicación entre nodos. Esto es distinto de establecer un canal con un par."
+			},
+			"response": []
+		},
+		{
+			"name": "Desconectar un peer conectado",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Grpc-Metadata-macaroon",
+						"value": "0201036C6E6402F801030A10D24C1FFB2CF1CAAE8DEB8B10CA3FB98D1201301A160A0761646472657373120472656164120577726974651A130A04696E666F120472656164120577726974651A170A08696E766F69636573120472656164120577726974651A210A086D616361726F6F6E120867656E6572617465120472656164120577726974651A160A076D657373616765120472656164120577726974651A170A086F6666636861696E120472656164120577726974651A160A076F6E636861696E120472656164120577726974651A140A057065657273120472656164120577726974651A180A067369676E6572120867656E657261746512047265616400000620120386778CB7CEA787C33CF3AFAE7ED7B94C4C67BD8D0F33BBF2A865A17992BD",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v1/peers/{{pubKeyPeer}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"peers",
+						"{{pubKeyPeer}}"
+					]
+				},
+				"description": "Intenta desconectar un peer de otro identificado por una pubKey determinada. En el caso de que actualmente tengamos un canal pendiente o activo con el par de destino, esta acción no estará permitida."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://ec2-44-236-65-205.us-west-2.compute.amazonaws.com:8888"
+		},
+		{
+			"key": "pubKey",
+			"value": "030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516"
+		},
+		{
+			"key": "payReq",
+			"value": "lntb50u1p0a63m2pp5cl3y822scza86cx34dh2s85da3w4zt5a0t7df9q0mqp4ppxg57usdqqcqzpgxqyz5vqsp5q7l407mppk88l8k7v4emgc8f6vr9trzu5urg99xc46kw279pzkes9qyyssqqly0rr5kft5gl34eqh4fp0ksmylq76lvc4lkmkzuw752t6j2mjwzdnntkdpcx9f3kyykv7t63euwh62x6hvheh7gd939u6ehmhhkycqpzshzza"
+		},
+		{
+			"key": "pubKeyPeer",
+			"value": "03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003"
+		}
+	]
+}
