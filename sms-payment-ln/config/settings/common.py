@@ -4,6 +4,7 @@ from distutils.util import strtobool
 import dj_database_url
 from configurations import Configuration
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR =  os.path.abspath(os.path.dirname(__name__))
 
 
 class Common(Configuration):
@@ -23,7 +24,9 @@ class Common(Configuration):
         'django_filters',            # for filtering rest endpoints
 
         # Your apps
-        'payment-engine.users',
+        'app.apps.Config',
+        'api.apps.Config'
+        #'payment-engine.users',
 
     )
 
@@ -39,9 +42,9 @@ class Common(Configuration):
     )
 
     ALLOWED_HOSTS = ["*"]
-    ROOT_URLCONF = 'payment-engine.urls'
+    ROOT_URLCONF = 'config.urls'
     SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-    WSGI_APPLICATION = 'payment-engine.wsgi.application'
+    WSGI_APPLICATION = 'config.wsgi.application'
 
     # Email
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -61,7 +64,7 @@ class Common(Configuration):
     # General
     APPEND_SLASH = False
     TIME_ZONE = 'UTC'
-    LANGUAGE_CODE = 'en-us'
+    LANGUAGE_CODE = 'es'
     # If you set this to False, Django will make some optimizations so as not
     # to load the internationalization machinery.
     USE_I18N = False
@@ -72,7 +75,8 @@ class Common(Configuration):
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/2.0/howto/static-files/
     STATIC_ROOT = os.path.normpath(join(os.path.dirname(BASE_DIR), 'static'))
-    STATICFILES_DIRS = []
+
+    STATICFILES_DIRS = [os.path.join(ROOT_DIR,'templates')]
     STATIC_URL = '/static/'
     STATICFILES_FINDERS = (
         'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -180,7 +184,7 @@ class Common(Configuration):
     }
 
     # Custom user app
-    AUTH_USER_MODEL = 'users.User'
+    #AUTH_USER_MODEL = 'users.User'
 
     # Django Rest Framework
     REST_FRAMEWORK = {
