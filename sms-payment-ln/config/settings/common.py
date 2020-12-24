@@ -196,10 +196,17 @@ class Common(Configuration):
             'rest_framework.renderers.BrowsableAPIRenderer',
         ),
         'DEFAULT_PERMISSION_CLASSES': [
-            'rest_framework.permissions.IsAuthenticated',
+            'rest_framework.permissions.AllowAny',
         ],
         'DEFAULT_AUTHENTICATION_CLASSES': (
             'rest_framework.authentication.SessionAuthentication',
             'rest_framework.authentication.TokenAuthentication',
         )
+    }
+
+    #Lnd Rest Settings
+    LND_REST = {
+        'ENDPOINT': os.getenv('LND_REST_ENDPOINT'),
+        'MACAROON': os.getenv('LND_REST_MACAROON'),
+        'CERT' : os.getenv('LND_REST_CERT')
     }
