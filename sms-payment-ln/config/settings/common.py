@@ -22,6 +22,7 @@ class Common(Configuration):
         'rest_framework',            # utilities for rest apis
         'rest_framework.authtoken',  # token authentication
         'django_filters',            # for filtering rest endpoints
+        'phonenumber_field',
 
         # Your apps
         'app.apps.Config',
@@ -184,7 +185,7 @@ class Common(Configuration):
     }
 
     # Custom user app
-    #AUTH_USER_MODEL = 'users.User'
+    AUTH_USER_MODEL = 'app.User'
 
     # Django Rest Framework
     REST_FRAMEWORK = {
