@@ -5,11 +5,11 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
-from .views import Test
-# from .users.views import UserViewSet, UserCreateViewSet
+from .views import Test, WalletViewSet
+
 
 router = DefaultRouter()
-#router.register(r'test', Test,basename='test')
+router.register(r'wallets', WalletViewSet)
 # router.register(r'users', UserCreateViewSet)
 
 urlpatterns = [
