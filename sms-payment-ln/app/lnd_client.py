@@ -13,7 +13,7 @@ class LndRestClient():
         self.auth = {"Grpc-Metadata-macaroon": settings.LND_REST['MACAROON']}
         self.cert = settings.LND_REST['CERT']
     
-    def newaddress(self) -> Dict:
+    def new_address(self) -> Dict:
 
         try:
             r = requests.get(
