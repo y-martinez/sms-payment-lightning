@@ -1,6 +1,5 @@
 import importlib
-
-from rest_framework import generics, viewsets, mixins
+from rest_framework import generics, viewsets, mixins, status
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.views import APIView
 from rest_framework.decorators import action
@@ -20,9 +19,10 @@ class Test(APIView):
             return Response(response)
 
 
-class WalletViewSet( mixins.CreateModelMixin,viewsets.GenericViewSet):
+class WalletViewSet(viewsets.ModelViewSet):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
+    lookup_field = 'address'
 
     @action(methods=['post'], detail=False)
     def newAddress(self,request):
@@ -33,12 +33,30 @@ class WalletViewSet( mixins.CreateModelMixin,viewsets.GenericViewSet):
             return Response(response)
 
     def create(self, request, *args,**kwargs):
+
         response = self.newAddress(self)
         if response.status_code >= 400:
             return response
-        else:
-            mutable = request.POST._mutable
-            request.POST._mutable = True
-            request.POST['address'] = response.data['address']
-            request.POST._mutable = mutable
-        return super().create(request,args,kwargs)
+        
+        serializer = self.get_serializer(data=response.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+
+        response = self.newAddress(self)
+        if response.status_code >= 400:
+            return response
+
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=response.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
