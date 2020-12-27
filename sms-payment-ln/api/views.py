@@ -26,7 +26,7 @@ class WalletViewSet( mixins.CreateModelMixin,viewsets.GenericViewSet):
 
     @action(methods=['post'], detail=False)
     def newAddress(self,request):
-        response = client.newaddress()
+        response = client.new_address()
         if 'error' in response.keys():
             return Response(data = {"error": response['error']}, status=response['status_code'])
         else:
