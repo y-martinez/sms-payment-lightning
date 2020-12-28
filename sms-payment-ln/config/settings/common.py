@@ -21,6 +21,7 @@ class Common(Configuration):
         "rest_framework",  # utilities for rest apis
         "rest_framework.authtoken",  # token authentication
         "django_filters",  # for filtering rest endpoints
+        "phonenumber_field",
         # Your apps
         "app.apps.Config",
         "api.apps.Config",
@@ -173,7 +174,7 @@ class Common(Configuration):
     }
 
     # Custom user app
-    # AUTH_USER_MODEL = 'users.User'
+    AUTH_USER_MODEL = "app.User"
 
     # Django Rest Framework
     REST_FRAMEWORK = {
@@ -185,10 +186,17 @@ class Common(Configuration):
             "rest_framework.renderers.BrowsableAPIRenderer",
         ),
         "DEFAULT_PERMISSION_CLASSES": [
-            "rest_framework.permissions.IsAuthenticated",
+            "rest_framework.permissions.AllowAny",
         ],
         "DEFAULT_AUTHENTICATION_CLASSES": (
             "rest_framework.authentication.SessionAuthentication",
             "rest_framework.authentication.TokenAuthentication",
         ),
+    }
+
+    # Lnd Rest Settings
+    LND_REST = {
+        "ENDPOINT": os.getenv("LND_REST_ENDPOINT"),
+        "MACAROON": os.getenv("LND_REST_MACAROON"),
+        "CERT": os.getenv("LND_REST_CERT"),
     }
