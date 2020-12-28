@@ -4,8 +4,6 @@ from django.core.validators import RegexValidator, MinValueValidator, MaxValueVa
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from decimal import Decimal
-
-
 class Wallet(models.Model):
     address = models.CharField(
         max_length=42,
