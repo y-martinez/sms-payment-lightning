@@ -23,16 +23,25 @@ class Wallet(models.Model):
 
 
 class User(AbstractUser):
+    first_name = None
+    last_name = None
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone_number = PhoneNumberField(unique=True)
     wallet = models.OneToOneField(Wallet, null=True, on_delete=models.CASCADE)
-    payments = models.ManyToManyField("self", through="Payment", symmetrical=False)
+
+    EMAIL_FIELD = None
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["phone_number"]
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-date_joined"]
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        self.username = str(self.phone_number)
+        return super(User, self).save(*args, **kwargs)
 
 
 class Payment(models.Model):
@@ -56,10 +65,17 @@ class Payment(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     settled_at = models.DateTimeField(blank=True, null=True)
-    payer = models.ForeignKey(User, related_name="payer", on_delete=models.CASCADE)
-    payee = models.ForeignKey(User, related_name="payee", on_delete=models.CASCADE)
+    payer = models.ForeignKey(
+        User, related_name="payer_payments", on_delete=models.CASCADE
+    )
+    payee = models.ForeignKey(
+        User, related_name="payee_payments", on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Payment #{self.id} from {self.payer} to {self.payee}"
 
     # TODO: When the status change to settle update the settle_at, or remove that field
