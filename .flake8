@@ -1,5 +1,6 @@
 [flake8]
-max-line-length = 119
+ignore = E226,E302,E41,E702,E731,W605
+max-line-length = 110
 exclude =
     .git,
     migrations,
