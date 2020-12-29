@@ -34,7 +34,7 @@ jobs:
     - name: Run Flake8 check
       run: |
         mkdir test-reports
-        pipenv run flake8 ./ --output-file test-reports/flake8
+        pipenv run flake8 ./ -v --output-file test-reports/flake8
     
     - name: Upload flake test results
       uses: actions/upload-artifact@master
