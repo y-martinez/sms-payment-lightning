@@ -2,7 +2,7 @@ import os
 from .common import Common
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+ROOT_DIR = os.path.abspath(os.path.dirname(__name__))
 
 class Testing(Common):
     DEBUG = True
@@ -12,12 +12,13 @@ class Testing(Common):
     INSTALLED_APPS += ("django_nose",)
     TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
     NOSE_ARGS = [
-        BASE_DIR,
+        ROOT_DIR,
         "-s",
         "--nologcapture",
         "--with-coverage",
-        "--with-progressive",
-        "--cover-package=payment-engine",
+        "--cover-package=api",
+        "--cover-package=app",
+        "--verbosity=2"
     ]
 
     # Mail
