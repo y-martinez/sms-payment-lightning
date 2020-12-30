@@ -24,3 +24,9 @@ class Testing(Common):
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+    LND_REST = {
+        "ENDPOINT": 'https://example.com:9876',
+        "MACAROON": 'TEXT',
+        "CERT": 'tls.cert',
+    }
