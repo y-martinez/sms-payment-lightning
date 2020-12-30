@@ -26,7 +26,7 @@ class Testing(Common):
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
     LND_REST = {
-        "ENDPOINT": 'https://example.com:9876',
-        "MACAROON": 'TEXT',
-        "CERT": 'tls.cert',
+        "ENDPOINT": "https://example.com:9876",
+        "MACAROON": "TEXT",
+        "CERT": "tls.cert",
     }
