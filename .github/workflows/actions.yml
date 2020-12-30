@@ -61,7 +61,7 @@ jobs:
 
     - name: Running migrations and tests
       env:
-        DJANGO_CONFIGURATION = 'Testing'
+        DJANGO_CONFIGURATION: 'Testing'
       run: |
         pipenv run python manage migrate
         pipenv run python manage test -v 2
