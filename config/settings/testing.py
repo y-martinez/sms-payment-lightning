@@ -4,6 +4,7 @@ from .common import Common
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.abspath(os.path.dirname(__name__))
 
+
 class Testing(Common):
     DEBUG = True
 
@@ -18,7 +19,7 @@ class Testing(Common):
         "--with-coverage",
         "--cover-package=api",
         "--cover-package=app",
-        "--verbosity=2"
+        "--verbosity=2",
     ]
 
     # Mail
