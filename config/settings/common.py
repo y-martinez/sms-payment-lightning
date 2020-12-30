@@ -56,8 +56,22 @@ class Common(Configuration):
         )
     }
 
+    if "GITHUB_WORKFLOW" in os.environ:
+        SECRET_KEY = "o9e7%1c^ijxoit37^!kbfyidas88714d514kaet%z&*pm&4k(3#h*k%irylt"
+
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": "postgres",
+                "USER": "postgres",
+                "PASSWORD": "postgres",
+                "HOST": "127.0.0.1",
+                "PORT": "5432",
+            }
+        }
+
     # General
-    APPEND_SLASH = False
+    APPEND_SLASH = True
     TIME_ZONE = "UTC"
     LANGUAGE_CODE = "es"
     # If you set this to False, Django will make some optimizations so as not
