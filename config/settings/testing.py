@@ -6,7 +6,6 @@ ROOT_DIR = os.path.abspath(os.path.dirname(__name__))
 
 class Testing(Common):
     DEBUG = True
-
     # Testing
     INSTALLED_APPS = Common.INSTALLED_APPS
     INSTALLED_APPS += ("django_nose",)
