@@ -63,5 +63,5 @@ jobs:
       env:
         DJANGO_CONFIGURATION: 'Testing'
       run: |
-        pipenv run python manage migrate
-        pipenv run python manage test -v 2
+        pipenv run python manage.py migrate
+        pipenv run python manage.py test -v 2
