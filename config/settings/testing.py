@@ -6,7 +6,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class Testing(Common):
     DEBUG = True
-
     # Testing
     INSTALLED_APPS = Common.INSTALLED_APPS
     INSTALLED_APPS += ("django_nose",)
@@ -17,7 +16,7 @@ class Testing(Common):
         "--nologcapture",
         "--with-coverage",
         "--with-progressive",
-        "--cover-package=payment-engine",
+        "--cover-package=api",
     ]
 
     # Mail
