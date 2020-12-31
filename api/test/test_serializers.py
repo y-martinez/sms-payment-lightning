@@ -2,19 +2,32 @@ from django.test import TestCase
 from django.forms.models import model_to_dict
 from nose.tools import eq_, ok_
 from .factories import WalletFactory
-from ..serializers import WalletSerializer
+from ..serializers import WalletSerializer, WalletSerializerBalance
 
 
 class TestWalletSerializer(TestCase):
     def setUp(self):
         self.wallet_data = model_to_dict(WalletFactory.build())
 
-    def test_serializer_with_empty_data(self):
+    def test_wallet_serializer_with_empty_data(self):
         serializer = WalletSerializer(data={})
         eq_(serializer.is_valid(), False)
         serializer = WalletSerializer(data={"s": "s"})
         eq_(serializer.is_valid(), False)
 
-    def test_serializer_with_valid_data(self):
+    def test_wallet_serializer_with_valid_data(self):
+        serializer = WalletSerializer(data=self.wallet_data)
+        ok_(serializer.is_valid())
+
+
+class TestWalletBalanceSerializer(TestCase):
+    def setUp(self):
+        self.wallet_data = model_to_dict(WalletFactory.build())
+
+    def test_balance_serializer_with_empty_data(self):
+        serializer = WalletSerializerBalance(data={})
+        eq_(not serializer.is_valid(), False)
+
+    def test_balance_serializer_with_valid_data(self):
         serializer = WalletSerializer(data=self.wallet_data)
         ok_(serializer.is_valid())
