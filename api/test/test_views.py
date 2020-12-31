@@ -1,5 +1,5 @@
 from django.urls import reverse
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 from rest_framework.test import APITestCase
 from unittest.mock import patch
 from rest_framework import status
@@ -12,13 +12,26 @@ class TestAddressTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("wallet-new-address")
         self.expected_wallet_data = {"address": WalletFactory.generate_address()}
+        self.expected_wallet_data_not_ok = [
+            {
+                "error": "Unable to connect www.example.com:9876",
+                "status_code": 500,
+            },
+            {"error": "Not found", "status_code": 404},
+        ]
 
     @patch("app.lnd_client.requests.get")
-    def test_get_new_address(self, mock_method):
+    def test_get_new_address_is_ok(self, mock_method):
         mock_method.return_value.json.return_value = self.expected_wallet_data
         response = self.client.post(self.url)
         eq_(response.status_code, status.HTTP_200_OK)
-        eq_(response.data, self.expected_wallet_data)
+
+    @patch("app.lnd_client.requests.get")
+    def test_get_new_address_is_not_ok(self, mock_method):
+        for error in self.expected_wallet_data_not_ok:
+            mock_method.return_value.json.return_value = error
+            response = self.client.post(self.url)
+            ok_(response.status_code != status.HTTP_200_OK)
 
 
 class TestWalletListTestCase(APITestCase):
