@@ -8,6 +8,19 @@ from ..serializers import WalletSerializer
 from app.models import Wallet
 
 
+class TestAddressTestCase(APITestCase):
+    def setUp(self):
+        self.url = reverse("wallet-new-address")
+        self.expected_wallet_data = {"address": WalletFactory.generate_address()}
+
+    @patch("app.lnd_client.requests.get")
+    def test_get_new_address(self, mock_method):
+        mock_method.return_value.json.return_value = self.expected_wallet_data
+        response = self.client.post(self.url)
+        eq_(response.status_code, status.HTTP_200_OK)
+        eq_(response.data, self.expected_wallet_data)
+
+
 class TestWalletListTestCase(APITestCase):
     def setUp(self):
         WalletFactory.create_batch(5)
