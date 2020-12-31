@@ -13,8 +13,11 @@ class WalletViewSet(viewsets.ModelViewSet):
     serializer_class = WalletSerializer
     lookup_field = "address"
 
+    def get_paginated_response(self, data):
+        return Response(data)
+
     @action(methods=["post"], detail=False)
-    def newAddress(self, request):
+    def new_address(self, request):
         response = client.new_address()
         if "error" in response.keys():
             return Response(
@@ -24,8 +27,7 @@ class WalletViewSet(viewsets.ModelViewSet):
             return Response(response)
 
     def create(self, request, *args, **kwargs):
-
-        response = self.newAddress(self)
+        response = self.new_address(self)
         if response.status_code >= 400:
             return response
 
@@ -39,7 +41,7 @@ class WalletViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
 
-        response = self.newAddress(self)
+        response = self.new_address(self)
         if response.status_code >= 400:
             return response
 
