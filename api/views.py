@@ -1,11 +1,33 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from app.lnd_client import LndRestClient
+from app.services import LndRestClient, get_current_rate
 from app.models import Wallet
-from api.serializers import WalletSerializer
+from api.serializers import WalletSerializer, WalletSerializerBalance
 
 client = LndRestClient()
+
+
+class GetWalletBalance(generics.RetrieveAPIView):
+    lookup_field = "address"
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializerBalance
+
+    def get(self, request, *args, **kwargs):
+        response = get_current_rate(self)
+
+        if "error" in response.keys():
+            return Response(
+                data={"error": response["error"]}, status=response["status_code"]
+            )
+        else:
+            response = {
+                "rate": {"code": "USD", "value": response["bpi"]["USD"]["rate_float"]}
+            }
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context=response)
+        return Response(serializer.data)
 
 
 class WalletViewSet(viewsets.ModelViewSet):

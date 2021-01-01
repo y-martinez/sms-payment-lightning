@@ -20,3 +20,4 @@ class WalletFactory(factory.django.DjangoModelFactory):
         string_format="tb1?#?#?#?##??##???#?#?#?#??#?#?#?#?#??##?",
         letters="abcdefghijklmnopqrstuvwxyz",
     )
+    balance = factory.Faker("pydecimal", left_digits=1, right_digits=8, positive=True)
