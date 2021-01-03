@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.forms.models import model_to_dict
 from nose.tools import eq_, ok_
-from .factories import WalletFactory
-from ..serializers import WalletSerializer, WalletSerializerBalance
+from .factories import WalletFactory, UserFactory
+from ..serializers import WalletSerializer, WalletSerializerBalance, UserSerializer
 
 
 class TestWalletSerializer(TestCase):
@@ -30,4 +30,19 @@ class TestWalletBalanceSerializer(TestCase):
 
     def test_balance_serializer_with_valid_data(self):
         serializer = WalletSerializer(data=self.wallet_data)
+        ok_(serializer.is_valid())
+
+
+class TestUserSerializer(TestCase):
+    def setUp(self):
+        self.user = UserFactory.build()
+        self.user_data = model_to_dict(self.user)
+        self.user_data["phone_number"] = str(self.user.phone_number)
+
+    def test_serializer_with_empty_data(self):
+        serializer = UserSerializer(data={})
+        eq_(serializer.is_valid(), False)
+
+    def test_serializer_with_valid_data(self):
+        serializer = UserSerializer(data=self.user_data)
         ok_(serializer.is_valid())

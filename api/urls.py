@@ -2,11 +2,12 @@ from django.urls import path, re_path, include, reverse_lazy
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
-from .views import WalletViewSet, GetWalletBalance
+from .views import WalletViewSet, GetWalletBalance, UserViewSet
 
 
 router = DefaultRouter()
 router.register(r"wallets", WalletViewSet)
+router.register(r"users", UserViewSet)
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),

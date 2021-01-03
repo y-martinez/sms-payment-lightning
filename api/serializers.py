@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models import Wallet
+from app.models import Wallet, User
 from decimal import Decimal
 from datetime import datetime
 
@@ -26,3 +26,18 @@ class WalletSerializerBalance(serializers.ModelSerializer):
     def get_balance_usd(self, wallet):
         current_rate = self.context
         return wallet.balance * Decimal(current_rate["rate"]["value"])
+
+
+class UserSerializer(serializers.ModelSerializer):
+    wallet = WalletSerializer(read_only=True)
+
+    def create(self, validated_data):
+        # call create_user on user object. Without  this
+        # the password will be stored in plain text.
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    class Meta:
+        model = User
+        fields = ["phone_number", "wallet"]
+        extra_kwargs = {"password": {"write_only": True}}
