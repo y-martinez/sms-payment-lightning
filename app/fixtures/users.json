@@ -1,0 +1,20 @@
+[
+    {
+        "model": "app.user",
+        "pk": "c37b109d-3634-4ca9-93cf-6ef014735041",
+        "fields": {
+            "password": "pbkdf2_sha256$216000$neWr1Y3cEHWr$rihH3FQesQMFkZMXyGpiru+tT9VJGSig5lwGzxuQ9SM=",
+            "last_login": "2021-01-04T17:02:48Z",
+            "is_superuser": true,
+            "username": "+584169009605",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2021-01-04T17:02:15Z",
+            "phone_number": "+584169009605",
+            "wallet": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

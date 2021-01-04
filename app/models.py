@@ -53,7 +53,6 @@ class Payment(models.Model):
     invoice = models.CharField(
         max_length=500,
         null=True,
-        unique=True,
         validators=[RegexValidator(regex="^lntb(\d{1,12})(\w{200,550})$")],
     )
     description = models.CharField(max_length=120, blank=True, null=True)
