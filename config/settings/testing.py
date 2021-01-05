@@ -33,4 +33,11 @@ class Testing(Common):
     }
 
     # Blockcypher Settings
+<<<<<<< HEAD
     BLOCKCYPHER = {"TOKEN": "TOKEN", "COIN": "btc"}
+=======
+    BLOCKCYPHER = {
+        "TOKEN": "TOKEN",
+        "COIN": "btc"
+    }
+>>>>>>> 770a5660005b6776f0b6a6c48bdbcec27245470d
