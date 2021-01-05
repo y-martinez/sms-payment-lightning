@@ -26,6 +26,8 @@ class RefillWebHook(views.APIView):
             return Response(
                 {"message": "account waiting for your funds"}, status=status.HTTP_200_OK
             )
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
         outputs = request.data["outputs"]

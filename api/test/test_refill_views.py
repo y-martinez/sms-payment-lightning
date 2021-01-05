@@ -113,3 +113,11 @@ class TestRefill(APITestCase):
 
         response = self.client.get(self.url_outcoming)
         eq_(response.status_code, status.HTTP_200_OK)
+
+    @patch("app.services.subscribe_address_webhook")
+    def test_create_webhook_to_refill_address_not_ok(self, mock_subscribe):
+
+        mock_subscribe.return_value = "bcaf7c39-9a7f-4e8b-8ba4-23b3c1806039"
+
+        response = self.client.get(self.url_incoming)
+        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
