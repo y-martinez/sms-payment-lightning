@@ -1,9 +1,13 @@
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets, status, generics, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from app.services import LndRestClient, get_current_rate
-from app.models import Wallet
-from api.serializers import WalletSerializer, WalletSerializerBalance
+from app.models import Wallet, User
+from api.serializers import (
+    WalletSerializer,
+    WalletSerializerBalance,
+    UserSerializer,
+)
 
 client = LndRestClient()
 
@@ -77,3 +81,47 @@ class WalletViewSet(viewsets.ModelViewSet):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+
+class UserViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+
+    lookup_field = "phone_number"
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_paginated_response(self, data):
+        return Response(data)
+
+    def perform_create(self, serializer, wallet_created):
+
+        serializer.save(
+            username=self.request.data["phone_number"],
+            phone_number=self.request.data["phone_number"],
+            wallet=wallet_created,
+        )
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        response = WalletViewSet.as_view({"post": "create"})(
+            request=self.request._request
+        )
+
+        if response.status_code >= 400:
+            return response
+
+        wallet_created = Wallet.objects.get(address=response.data["address"])
+
+        self.perform_create(serializer, wallet_created)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
