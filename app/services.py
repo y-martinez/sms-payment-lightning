@@ -1,6 +1,41 @@
 import requests
+from django.urls import reverse
 from django.conf import settings
 from typing import Dict
+from blockcypher import (
+    subscribe_to_address_webhook as subscribe_address_webhook,
+    unsubscribe_from_webhook,
+    list_webhooks as list_of_webhooks,
+)
+
+
+def list_webhooks() -> Dict:
+    return list_of_webhooks(
+        api_key=settings.BLOCKCYPHER["TOKEN"], coin_symbol=settings.BLOCKCYPHER["COIN"]
+    )
+
+
+def unsubscribe_webhook_address(address) -> bool:
+    webhooks = list_webhooks()
+    for webhook in webhooks:
+        if webhook["address"] == address:
+            return unsubscribe_from_webhook(
+                webhook_id=webhook["id"],
+                api_key=settings.BLOCKCYPHER["TOKEN"],
+                coin_symbol=settings.BLOCKCYPHER["COIN"],
+            )
+    return False
+
+
+def subscribe_to_address_webhook(request, address) -> str:
+    full_url = request.build_absolute_uri(reverse("wallet-refill"))
+    return subscribe_address_webhook(
+        callback_url=full_url,
+        subscription_address=address,
+        event="confirmed-tx",
+        api_key=settings.BLOCKCYPHER["TOKEN"],
+        coin_symbol=settings.BLOCKCYPHER["COIN"],
+    )
 
 
 def get_current_rate(self, code="USD") -> Dict:

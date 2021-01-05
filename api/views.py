@@ -1,15 +1,57 @@
-from rest_framework import viewsets, status, generics, mixins
+from rest_framework import viewsets, status, generics, mixins, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from app.services import LndRestClient, get_current_rate
+from app.services import (
+    LndRestClient,
+    get_current_rate,
+    unsubscribe_webhook_address,
+    subscribe_to_address_webhook,
+)
 from app.models import Wallet, User
 from api.serializers import (
     WalletSerializer,
     WalletSerializerBalance,
     UserSerializer,
 )
+from decimal import Decimal
+
 
 client = LndRestClient()
+
+
+class RefillWebHook(views.APIView):
+    def get(self, request, *args, **kwargs):
+        if "address" in kwargs:
+            subscribe_to_address_webhook(request, kwargs["address"])
+            return Response(
+                {"message": "account waiting for your funds"}, status=status.HTTP_200_OK
+            )
+
+    def post(self, request, *args, **kwargs):
+        outputs = request.data["outputs"]
+        completed = False
+        for out in outputs:
+            addresses = out["addresses"]
+            for add in addresses:
+                try:
+                    wallet = Wallet.objects.get(address=add)
+                except Wallet.DoesNotExist:
+                    wallet = None
+
+                if wallet is not None:
+                    wallet.balance += Decimal(out["value"] * 0.00000001)
+                    wallet.save()
+                    completed = unsubscribe_webhook_address(add)
+                    break
+        if completed:
+            return Response(
+                {"message": "account successfully recharged"}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "account could not be recharged"},
+                status=status.HTTP_304_NOT_MODIFIED,
+            )
 
 
 class GetWalletBalance(generics.RetrieveAPIView):
