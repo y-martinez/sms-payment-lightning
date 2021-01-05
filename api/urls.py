@@ -2,7 +2,7 @@ from django.urls import path, re_path, include, reverse_lazy
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
-from .views import WalletViewSet, GetWalletBalance, UserViewSet
+from .views import WalletViewSet, GetWalletBalance, UserViewSet, RefillWebHook
 
 
 router = DefaultRouter()
@@ -12,9 +12,19 @@ router.register(r"users", UserViewSet)
 urlpatterns = [
     path("api/v1/", include(router.urls)),
     re_path(
-        r"^api/v1/wallets/(?P<address>[^/.]+)/balance/$",
+        r"^api/v1/wallets/(?P<address>[a-z0-9]+)/balance/$",
         GetWalletBalance.as_view(),
         name="wallet-balance",
+    ),
+    re_path(
+        r"^api/v1/webhooks/refill_address/$",
+        RefillWebHook.as_view(),
+        name="wallet-refill",
+    ),
+    re_path(
+        r"^api/v1/webhooks/refill_address/(?P<address>[a-z0-9]+)/$",
+        RefillWebHook.as_view(),
+        name="wallet-refill",
     ),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
