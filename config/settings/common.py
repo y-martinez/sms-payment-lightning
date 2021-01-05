@@ -221,3 +221,9 @@ class Common(Configuration):
         "TOKEN": os.getenv("TOKEN_BLOCKCYPHER"),
         "COIN": os.getenv("COIN_SYMBOL"),
     }
+
+    # Crypto constants
+
+    CRYPTO_CONSTANTS = {
+        "MIN_SATOSHIS_DECIMAL": 0.00000001,
+    }

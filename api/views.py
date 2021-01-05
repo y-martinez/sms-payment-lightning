@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import viewsets, status, generics, mixins, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -41,7 +42,9 @@ class RefillWebHook(views.APIView):
                     wallet = None
 
                 if wallet is not None:
-                    wallet.balance += Decimal(out["value"] * 0.00000001)
+                    wallet.balance += Decimal(
+                        out["value"] * settings.CRYPTO_CONSTANTS["MIN_SATOSHIS_DECIMAL"]
+                    )
                     wallet.save()
                     completed = unsubscribe_webhook_address(add)
                     break
