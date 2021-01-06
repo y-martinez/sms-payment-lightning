@@ -60,7 +60,7 @@ class Payment(models.Model):
     description = models.CharField(max_length=120, blank=True, null=True)
     value = models.IntegerField(
         validators=[MinValueValidator(100), MaxValueValidator(100000000)]
-    )  # Satoshis
+    )
     status = models.PositiveSmallIntegerField(
         choices=Status.choices, default=Status.OPEN
     )

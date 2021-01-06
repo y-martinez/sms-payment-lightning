@@ -31,3 +31,6 @@ class Testing(Common):
         "MACAROON": "TEXT",
         "CERT": "tls.cert",
     }
+
+    # Blockcypher Settings
+    BLOCKCYPHER = {"TOKEN": "TOKEN", "COIN": "btc"}

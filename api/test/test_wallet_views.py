@@ -4,6 +4,11 @@ from rest_framework.test import APITestCase
 from unittest.mock import patch
 from rest_framework import status
 from .factories import WalletFactory
+from .data_fake import (
+    data_balance_wallet,
+    data_wallet_errors,
+    data_balance_wallet_errors,
+)
 from ..serializers import WalletSerializer
 from app.models import Wallet
 from decimal import Decimal
@@ -13,13 +18,7 @@ class TestAddressTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("wallet-new-address")
         self.expected_wallet_data = {"address": WalletFactory.generate_address()}
-        self.expected_wallet_data_not_ok = [
-            {
-                "error": "Unable to connect www.example.com:9876",
-                "status_code": 500,
-            },
-            {"error": "Not found", "status_code": 404},
-        ]
+        self.expected_wallet_data_not_ok = data_wallet_errors
 
     @patch("app.services.requests.get")
     def test_get_new_address_is_ok(self, mock_method):
@@ -99,33 +98,13 @@ class TestWalletBalanceTestCase(APITestCase):
     def setUp(self):
         self.wallet = WalletFactory.create()
         self.url = reverse("wallet-balance", kwargs={"address": self.wallet.address})
-        self.expected_rate_data = {
-            "time": {
-                "updated": "Dec 31, 2020 21:00:00 UTC",
-                "updatedISO": "2020-12-31T21:00:00+00:00",
-                "updateduk": "Dec 31, 2020 at 21:00 GMT",
-            },
-            "disclaimer": "This data was produced from the CoinDesk Bitcoin Price\
-                Index (USD). Non-USD currency data converted using hourly conversion\
-                    rate from openexchangerates.org",
-            "bpi": {
-                "USD": {
-                    "code": "USD",
-                    "rate": "21,306.29",
-                    "description": "United States Dollar",
-                    "rate_float": 21306.29,
-                }
-            },
-        }
+        self.expected_rate_data = data_balance_wallet
 
         self.balance_usd_expected = self.wallet.balance * Decimal(
             self.expected_rate_data["bpi"]["USD"]["rate_float"]
         )
 
-        self.expected_rate_data_not_ok = {
-            "error": "Unable to connect www.apibtc.com",
-            "status_code": 500,
-        }
+        self.expected_rate_data_not_ok = data_balance_wallet_errors
 
     @patch("app.services.requests.get")
     def test_get_balance_by_address(self, mock_method):

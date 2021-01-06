@@ -1,15 +1,65 @@
-from rest_framework import viewsets, status, generics, mixins
+from django.conf import settings
+from rest_framework import viewsets, status, generics, mixins, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from app.services import LndRestClient, get_current_rate
+from app.services import (
+    LndRestClient,
+    get_current_rate,
+    unsubscribe_webhook_address,
+    subscribe_to_address_webhook,
+)
 from app.models import Wallet, User
 from api.serializers import (
     WalletSerializer,
     WalletSerializerBalance,
     UserSerializer,
 )
+from decimal import Decimal, getcontext
+
 
 client = LndRestClient()
+
+
+class RefillWebHook(views.APIView):
+    def get(self, request, *args, **kwargs):
+        if "address" in kwargs:
+            subscribe_to_address_webhook(request, kwargs["address"])
+            return Response(
+                {"message": "account waiting for your funds"}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, *args, **kwargs):
+        getcontext().prec = 8
+        outputs = request.data["outputs"]
+        completed = False
+        for out in outputs:
+            addresses = out["addresses"]
+            for add in addresses:
+                try:
+                    wallet = Wallet.objects.get(address=add)
+                except Wallet.DoesNotExist:
+                    wallet = None
+
+                if wallet is not None:
+                    inconming_btc = (
+                        out["value"] * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
+                    )
+                    inconming_btc = Decimal(inconming_btc)
+                    wallet.balance = wallet.balance + inconming_btc
+                    wallet.save()
+                    completed = unsubscribe_webhook_address(add)
+                    break
+        if completed:
+            return Response(
+                {"message": "account successfully recharged"}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "account could not be recharged"},
+                status=status.HTTP_304_NOT_MODIFIED,
+            )
 
 
 class GetWalletBalance(generics.RetrieveAPIView):

@@ -214,3 +214,16 @@ class Common(Configuration):
         "MACAROON": os.getenv("LND_REST_MACAROON"),
         "CERT": os.getenv("LND_REST_CERT"),
     }
+
+    # Blockcypher Settings
+
+    BLOCKCYPHER = {
+        "TOKEN": os.getenv("TOKEN_BLOCKCYPHER"),
+        "COIN": os.getenv("COIN_SYMBOL"),
+    }
+
+    # Crypto constants
+
+    CRYPTO_CONSTANTS = {
+        "SAT_TO_BTC_FACTOR": 0.00000001,
+    }
