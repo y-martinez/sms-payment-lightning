@@ -225,5 +225,5 @@ class Common(Configuration):
     # Crypto constants
 
     CRYPTO_CONSTANTS = {
-        "MIN_SATOSHIS_DECIMAL": 0.00000001,
+        "SAT_TO_BTC_FACTOR": 0.00000001,
     }

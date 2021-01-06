@@ -9,11 +9,10 @@ from .data_fake import data_of_webhook, data_list_webhooks
 from app.models import User
 from decimal import Decimal, getcontext
 
-getcontext().prec = 8
-
 
 class TestRefill(APITestCase):
     def setUp(self):
+        getcontext().prec = 8
         self.user_data = UserFactory.create()
         self.url_incoming = reverse("wallet-refill")
         self.url_outcoming = reverse(
@@ -27,12 +26,10 @@ class TestRefill(APITestCase):
 
         data_of_webhook["outputs"][0]["addresses"].append(self.user_data.wallet.address)
         data_list_webhooks[0]["address"] = self.user_data.wallet.address
-        incoming_satoshis = data_of_webhook["outputs"][0]["value"]
+        incoming_sat = data_of_webhook["outputs"][0]["value"]
 
-        incoming_satoshis = (
-            incoming_satoshis * settings.CRYPTO_CONSTANTS["MIN_SATOSHIS_DECIMAL"]
-        )
-        incoming_btc = Decimal(incoming_satoshis)
+        incoming_btc = incoming_sat * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
+        incoming_btc = Decimal(incoming_btc)
 
         mock_unsubscribe.return_value = True
         mock_list.return_value = data_list_webhooks
@@ -44,9 +41,9 @@ class TestRefill(APITestCase):
         eq_(response.status_code, status.HTTP_200_OK)
 
         user = User.objects.get(phone_number=self.user_data.phone_number)
-        balance = self.user_data.wallet.balance + incoming_btc
+        expected_balance = self.user_data.wallet.balance + incoming_btc
 
-        eq_(balance, user.wallet.balance)
+        eq_(expected_balance, user.wallet.balance)
 
     @patch("app.services.list_of_webhooks")
     @patch("app.services.unsubscribe_from_webhook")

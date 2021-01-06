@@ -18,8 +18,6 @@ from decimal import Decimal, getcontext
 
 
 client = LndRestClient()
-getcontext().prec = 8
-
 
 class RefillWebHook(views.APIView):
     def get(self, request, *args, **kwargs):
@@ -32,6 +30,7 @@ class RefillWebHook(views.APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
+        getcontext().prec = 8
         outputs = request.data["outputs"]
         completed = False
         for out in outputs:
@@ -44,7 +43,7 @@ class RefillWebHook(views.APIView):
 
                 if wallet is not None:
                     inconming_btc = (
-                        out["value"] * settings.CRYPTO_CONSTANTS["MIN_SATOSHIS_DECIMAL"]
+                        out["value"] * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
                     )
                     inconming_btc = Decimal(inconming_btc)
                     wallet.balance = wallet.balance + inconming_btc
