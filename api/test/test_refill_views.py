@@ -19,6 +19,7 @@ class TestRefill(APITestCase):
         self.url_outcoming = reverse(
             "wallet-refill", kwargs={"address": self.user_data.wallet.address}
         )
+        self.id_webhook = "bcaf7c39-9a7f-4e8b-8ba4-23b3c1806039"
 
     @patch("app.services.list_of_webhooks")
     @patch("app.services.unsubscribe_from_webhook")
@@ -62,7 +63,7 @@ class TestRefill(APITestCase):
     @patch("app.services.subscribe_address_webhook")
     def test_create_webhook_to_refill_address_ok(self, mock_subscribe):
 
-        mock_subscribe.return_value = "bcaf7c39-9a7f-4e8b-8ba4-23b3c1806039"
+        mock_subscribe.return_value = self.id_webhook
 
         response = self.client.get(self.url_outcoming)
         eq_(response.status_code, status.HTTP_200_OK)
@@ -70,7 +71,7 @@ class TestRefill(APITestCase):
     @patch("app.services.subscribe_address_webhook")
     def test_create_webhook_to_refill_address_not_ok(self, mock_subscribe):
 
-        mock_subscribe.return_value = "bcaf7c39-9a7f-4e8b-8ba4-23b3c1806039"
+        mock_subscribe.return_value = self.id_webhook
 
         response = self.client.get(self.url_incoming)
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
