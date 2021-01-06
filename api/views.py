@@ -19,6 +19,7 @@ from decimal import Decimal, getcontext
 
 client = LndRestClient()
 
+
 class RefillWebHook(views.APIView):
     def get(self, request, *args, **kwargs):
         if "address" in kwargs:
