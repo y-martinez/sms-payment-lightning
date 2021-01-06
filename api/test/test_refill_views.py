@@ -1,10 +1,15 @@
 from django.urls import reverse
+from django.conf import settings
 from nose.tools import eq_
 from rest_framework.test import APITestCase
 from unittest.mock import patch
 from rest_framework import status
 from .factories import UserFactory
 from .data_fake import data_of_webhook, data_list_webhooks
+from app.models import User
+from decimal import Decimal, getcontext
+
+getcontext().prec = 8
 
 
 class TestRefill(APITestCase):
@@ -20,8 +25,13 @@ class TestRefill(APITestCase):
     def test_response_of_webhook_blockcypher_ok(self, mock_unsubscribe, mock_list):
 
         data_of_webhook["outputs"][0]["addresses"].append(self.user_data.wallet.address)
-
         data_list_webhooks[0]["address"] = self.user_data.wallet.address
+        incoming_satoshis = data_of_webhook["outputs"][0]["value"]
+
+        incoming_satoshis = (
+            incoming_satoshis * settings.CRYPTO_CONSTANTS["MIN_SATOSHIS_DECIMAL"]
+        )
+        incoming_btc = Decimal(incoming_satoshis)
 
         mock_unsubscribe.return_value = True
         mock_list.return_value = data_list_webhooks
@@ -29,7 +39,13 @@ class TestRefill(APITestCase):
         response = self.client.post(
             self.url_incoming, data=data_of_webhook, format="json"
         )
+
         eq_(response.status_code, status.HTTP_200_OK)
+
+        user = User.objects.get(phone_number=self.user_data.phone_number)
+        balance = self.user_data.wallet.balance + incoming_btc
+
+        eq_(balance, user.wallet.balance)
 
     @patch("app.services.list_of_webhooks")
     @patch("app.services.unsubscribe_from_webhook")

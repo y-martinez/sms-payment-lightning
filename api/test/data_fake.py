@@ -35,14 +35,14 @@ data_of_webhook = {
     ],
     "outputs": [
         {
-            "value": 5819156582,
-            "script": "001436e57b6cff99034510756bd563afaf2a8f7aea8f",
+            "value": 1601786,
+            "script": "00147757ca61557a67cb5083200d1c1b62df65ec7b24",
             "addresses": [],
             "script_type": "pay-to-witness-pubkey-hash",
         },
         {
-            "value": 1601786,
-            "script": "00147757ca61557a67cb5083200d1c1b62df65ec7b24",
+            "value": 5819156582,
+            "script": "001436e57b6cff99034510756bd563afaf2a8f7aea8f",
             "addresses": ["tb1qwatu5c240fnuk5yryqx3cxmzmaj7c7eydzwred"],
             "script_type": "pay-to-witness-pubkey-hash",
         },

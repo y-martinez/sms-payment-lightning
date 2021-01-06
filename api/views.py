@@ -14,10 +14,11 @@ from api.serializers import (
     WalletSerializerBalance,
     UserSerializer,
 )
-from decimal import Decimal
+from decimal import Decimal, getcontext
 
 
 client = LndRestClient()
+getcontext().prec = 8
 
 
 class RefillWebHook(views.APIView):
@@ -42,9 +43,11 @@ class RefillWebHook(views.APIView):
                     wallet = None
 
                 if wallet is not None:
-                    wallet.balance += Decimal(
+                    inconming_btc = (
                         out["value"] * settings.CRYPTO_CONSTANTS["MIN_SATOSHIS_DECIMAL"]
                     )
+                    inconming_btc = Decimal(inconming_btc)
+                    wallet.balance = wallet.balance + inconming_btc
                     wallet.save()
                     completed = unsubscribe_webhook_address(add)
                     break
