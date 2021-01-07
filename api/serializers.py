@@ -1,6 +1,7 @@
+from django.conf import settings
 from rest_framework import serializers
-from app.models import Wallet, User
-from decimal import Decimal
+from app.models import Wallet, User, Payment
+from decimal import Decimal, getcontext
 from datetime import datetime
 
 
@@ -41,3 +42,34 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["phone_number", "wallet"]
         extra_kwargs = {"password": {"write_only": True}}
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    payer = serializers.SlugRelatedField(
+        queryset=User.objects.all(), slug_field="username"
+    )
+    payee = serializers.SlugRelatedField(
+        queryset=User.objects.all(), slug_field="username"
+    )
+
+    class Meta:
+        model = Payment
+        fields = ["description", "value", "payer", "payee"]
+
+    def validate(self, data):
+        getcontext().prec = 8
+        if data["payer"] == data["payee"]:
+            raise serializers.ValidationError(
+                {"payeer": "payee must be different from payer"}
+            )
+
+        value_btc = Decimal(data["value"]) * Decimal(
+            settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
+        )
+        value_btc = Decimal(value_btc)
+
+        if data["payer"].wallet.balance < value_btc:
+            raise serializers.ValidationError(
+                {"payeer": "payer has insufficient funds"}
+            )
+        return data
