@@ -32,26 +32,29 @@ class TestPaymentSatoshis(APITestCase):
         response = self.client.post(self.url, data=self.data_to_pay)
         eq_(response.status_code, status.HTTP_201_CREATED)
 
-        user_payer_expected = User.objects.get(pk=self.user_payer.id)
-        user_payee_expected = User.objects.get(pk=self.user_payee.id)
+        user_payer_updated = User.objects.get(pk=self.user_payer.id)
+        user_payee_updated = User.objects.get(pk=self.user_payee.id)
 
         payer_balance_expected = self.user_payer.wallet.balance - amount_btc
         payee_balance_expected = self.user_payee.wallet.balance + amount_btc
 
         eq_(payer_balance_expected, user_payer_expected.wallet.balance)
         eq_(payee_balance_expected, user_payee_expected.wallet.balance)
-
+        
     def test_payment_with_data_not_ok(self):
 
         response = self.client.post(self.url, data={})
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         amount_btc = self.user_payer.wallet.balance
-        amount_sat = amount_btc * settings.CRYPTO_CONSTANTS["BTC_TO_SAT_FACTOR"]
-        amount_sat += 1
+        amount_sat = Decimal(amount_btc * Decimal(settings.CRYPTO_CONSTANTS["BTC_TO_SAT_FACTOR"]))
 
         self.data_to_pay["value"] = amount_sat
+        print(amount_btc)
+        print(int(amount_sat))
+        print(amount_sat)
         response = self.client.post(self.url, data=self.data_to_pay)
+        print(response.data['value'][0])
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         self.data_to_pay["payee"] = self.data_to_pay["payer"]
@@ -62,8 +65,10 @@ class TestPaymentSatoshis(APITestCase):
         response = self.client.post(self.url, data=self.data_to_pay)
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        self.data_to_pay["payer"] = "+584169009614"
-        self.data_to_pay["payee"] = "+584169009614"
+        payer_not_exist = "+584169009614"
+        payee_not_exist = "+584169009615"
+        self.data_to_pay["payer"] = payer_not_exist
+        self.data_to_pay["payee"] = payee_not_exist
         response = self.client.post(self.url, data=self.data_to_pay)
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
 
