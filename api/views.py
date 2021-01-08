@@ -82,13 +82,7 @@ class GetWalletBalance(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-class WalletViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.CreateModelMixin,
-    viewsets.GenericViewSet):
-    
+class WalletViewSet(viewsets.ModelViewSet):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
     lookup_field = "address"
