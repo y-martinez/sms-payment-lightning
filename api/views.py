@@ -1,4 +1,3 @@
-from django.conf import settings
 from rest_framework import viewsets, status, generics, mixins, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,7 +13,6 @@ from api.serializers import (
     WalletSerializerBalance,
     UserSerializer,
 )
-from decimal import Decimal, getcontext
 
 
 client = LndRestClient()
@@ -31,7 +29,6 @@ class RefillWebHook(views.APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
-        getcontext().prec = 8
         outputs = request.data["outputs"]
         completed = False
         for out in outputs:
@@ -43,11 +40,8 @@ class RefillWebHook(views.APIView):
                     wallet = None
 
                 if wallet is not None:
-                    inconming_btc = (
-                        out["value"] * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-                    )
-                    inconming_btc = Decimal(inconming_btc)
-                    wallet.balance = wallet.balance + inconming_btc
+                    inconming_sat = out["value"]
+                    wallet.balance = wallet.balance + inconming_sat
                     wallet.save()
                     completed = unsubscribe_webhook_address(add)
                     break
