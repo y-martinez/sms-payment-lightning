@@ -8,7 +8,7 @@ from app.models import User, Payment
 from factory import build
 
 
-class TestPaymentSatoshis(APITestCase):
+class TestPaymentView(APITestCase):
     def setUp(self):
         PaymentFactory.create_batch(5)
 
@@ -21,7 +21,7 @@ class TestPaymentSatoshis(APITestCase):
         self.data_to_pay["payer"] = str(self.user_payer.phone_number)
         self.data_to_pay["payee"] = str(self.user_payee.phone_number)
 
-    def test_payment_with_data_ok(self):
+    def test_payment_with_satoshis_data_ok(self):
         amount_sat = self.data_to_pay["value"]
 
         response = self.client.post(self.url, data=self.data_to_pay)
@@ -36,7 +36,7 @@ class TestPaymentSatoshis(APITestCase):
         eq_(payer_balance_expected, user_payer_updated.wallet.balance)
         eq_(payee_balance_expected, user_payee_updated.wallet.balance)
 
-    def test_payment_with_data_not_ok(self):
+    def test_payment_with_satatoshis_data_not_ok(self):
 
         response = self.client.post(self.url, data={})
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -62,6 +62,14 @@ class TestPaymentSatoshis(APITestCase):
         eq_(
             response.data["value"][0],
             "The payment amount should be greater than or equal to 100 satoshis",
+        )
+
+        self.data_to_pay["value"] = 100000001
+        response = self.client.post(self.url, data=self.data_to_pay)
+        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
+        eq_(
+            response.data["value"][0],
+            "The payment amount should be less than or equal to 100000000 satoshis",
         )
 
         payer_not_exist = "+584169009614"

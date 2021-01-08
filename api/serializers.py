@@ -62,7 +62,8 @@ class PaymentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "value": {
                 "error_messages": {
-                    "min_value": "The payment amount should be greater than or equal to 100 satoshis"
+                    "min_value": "The payment amount should be greater than or equal to 100 satoshis",
+                    "max_value": "The payment amount should be less than or equal to 100000000 satoshis",
                 }
             }
         }
