@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from app.models import Wallet, User
-from decimal import Decimal
 from datetime import datetime
 
 
@@ -25,7 +24,7 @@ class WalletSerializerBalance(serializers.ModelSerializer):
 
     def get_balance_usd(self, wallet):
         current_rate = self.context
-        return wallet.balance * Decimal(current_rate["rate"]["value"])
+        return wallet.balance * current_rate["rate"]["value"]
 
 
 class UserSerializer(serializers.ModelSerializer):

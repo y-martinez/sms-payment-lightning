@@ -14,7 +14,6 @@ from api.serializers import (
     WalletSerializerBalance,
     UserSerializer,
 )
-from decimal import Decimal, getcontext
 
 
 client = LndRestClient()
@@ -31,7 +30,6 @@ class RefillWebHook(views.APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
-        getcontext().prec = 8
         outputs = request.data["outputs"]
         completed = False
         for out in outputs:
@@ -46,7 +44,7 @@ class RefillWebHook(views.APIView):
                     inconming_btc = (
                         out["value"] * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
                     )
-                    inconming_btc = Decimal(inconming_btc)
+                    inconming_btc = inconming_btc
                     wallet.balance = wallet.balance + inconming_btc
                     wallet.save()
                     completed = unsubscribe_webhook_address(add)
@@ -84,7 +82,13 @@ class GetWalletBalance(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-class WalletViewSet(viewsets.ModelViewSet):
+class WalletViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet):
+    
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
     lookup_field = "address"

@@ -11,7 +11,6 @@ from .data_fake import (
 )
 from ..serializers import WalletSerializer
 from app.models import Wallet
-from decimal import Decimal
 
 
 class TestAddressTestCase(APITestCase):
@@ -100,8 +99,8 @@ class TestWalletBalanceTestCase(APITestCase):
         self.url = reverse("wallet-balance", kwargs={"address": self.wallet.address})
         self.expected_rate_data = data_balance_wallet
 
-        self.balance_usd_expected = self.wallet.balance * Decimal(
-            self.expected_rate_data["bpi"]["USD"]["rate_float"]
+        self.balance_usd_expected = (
+            self.wallet.balance * self.expected_rate_data["bpi"]["USD"]["rate_float"]
         )
 
         self.expected_rate_data_not_ok = data_balance_wallet_errors

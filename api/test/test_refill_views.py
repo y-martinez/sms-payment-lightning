@@ -7,12 +7,10 @@ from rest_framework import status
 from .factories import UserFactory
 from .data_fake import data_of_webhook, data_list_webhooks
 from app.models import User
-from decimal import Decimal, getcontext
 
 
 class TestRefill(APITestCase):
     def setUp(self):
-        getcontext().prec = 8
         self.user_data = UserFactory.create()
         self.url_incoming = reverse("wallet-refill")
         self.url_outcoming = reverse(
@@ -29,7 +27,7 @@ class TestRefill(APITestCase):
         incoming_sat = data_of_webhook["outputs"][0]["value"]
 
         incoming_btc = incoming_sat * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        incoming_btc = Decimal(incoming_btc)
+        incoming_btc = incoming_btc
 
         mock_unsubscribe.return_value = True
         mock_list.return_value = data_list_webhooks
