@@ -47,3 +47,13 @@ class UserFactory(factory.django.DjangoModelFactory):
     id = factory.Faker("uuid4")
     phone_number = factory.LazyAttribute(lambda _: fake.phone_number())
     wallet = factory.SubFactory(WalletFactory)
+
+
+class PaymentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "app.Payment"
+
+    value = factory.Faker("pyint", min_value=100, max_value=50000)
+    description = factory.Faker("text", max_nb_chars=100)
+    payer = factory.SubFactory(UserFactory)
+    payee = factory.SubFactory(UserFactory)

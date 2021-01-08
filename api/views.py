@@ -7,11 +7,12 @@ from app.services import (
     unsubscribe_webhook_address,
     subscribe_to_address_webhook,
 )
-from app.models import Wallet, User
+from app.models import Wallet, User, Payment
 from api.serializers import (
     WalletSerializer,
     WalletSerializerBalance,
     UserSerializer,
+    PaymentSerializer,
 )
 
 
@@ -166,6 +167,44 @@ class UserViewSet(
         self.perform_create(serializer, wallet_created)
         headers = self.get_success_headers(serializer.data)
 
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class PaymentViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def get_paginated_response(self, data):
+        return Response(data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        value_satoshi = data["value"]
+
+        user_payer = User.objects.get(username=data["payer"])
+        user_payee = User.objects.get(username=data["payee"])
+
+        user_payer.wallet.balance = user_payer.wallet.balance - value_satoshi
+        user_payee.wallet.balance = user_payee.wallet.balance + value_satoshi
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        user_payer.wallet.save()
+        user_payee.wallet.save()
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )

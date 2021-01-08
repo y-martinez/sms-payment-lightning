@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from app.models import Wallet, User
+from app.models import Wallet, User, Payment
 from datetime import datetime
 
 
@@ -42,3 +42,37 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["phone_number", "wallet"]
         extra_kwargs = {"password": {"write_only": True}}
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    payer = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
+    )
+    payee = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
+    )
+
+    class Meta:
+        model = Payment
+        fields = ["description", "value", "payer", "payee"]
+        extra_kwargs = {
+            "value": {
+                "error_messages": {
+                    "min_value": "The payment amount should be greater than or equal to 100 satoshis",
+                    "max_value": "The payment amount should be less than or equal to 100000000 satoshis",
+                }
+            }
+        }
+
+    def validate(self, data):
+        if data["payer"] == data["payee"]:
+            raise serializers.ValidationError(
+                {"payer": "Payee must be different from payer"}
+            )
+        if data["payer"].wallet.balance < data["value"]:
+            raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
+        return data
