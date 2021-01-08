@@ -1,5 +1,4 @@
 from django.urls import reverse
-from django.conf import settings
 from nose.tools import eq_
 from rest_framework.test import APITestCase
 from unittest.mock import patch
@@ -26,9 +25,6 @@ class TestRefill(APITestCase):
         data_list_webhooks[0]["address"] = self.user_data.wallet.address
         incoming_sat = data_of_webhook["outputs"][0]["value"]
 
-        incoming_btc = incoming_sat * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        incoming_btc = incoming_btc
-
         mock_unsubscribe.return_value = True
         mock_list.return_value = data_list_webhooks
 
@@ -39,7 +35,7 @@ class TestRefill(APITestCase):
         eq_(response.status_code, status.HTTP_200_OK)
 
         user = User.objects.get(phone_number=self.user_data.phone_number)
-        expected_balance = self.user_data.wallet.balance + incoming_btc
+        expected_balance = self.user_data.wallet.balance + incoming_sat
 
         eq_(expected_balance, user.wallet.balance)
 

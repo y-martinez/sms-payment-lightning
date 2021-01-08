@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.conf import settings
 from nose.tools import eq_, ok_
 from rest_framework.test import APITestCase
 from unittest.mock import patch
@@ -100,8 +101,9 @@ class TestWalletBalanceTestCase(APITestCase):
         self.expected_rate_data = data_balance_wallet
 
         self.balance_usd_expected = (
-            self.wallet.balance * self.expected_rate_data["bpi"]["USD"]["rate_float"]
+            self.wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
         )
+        self.balance_usd_expected *= self.expected_rate_data["bpi"]["USD"]["rate_float"]
 
         self.expected_rate_data_not_ok = data_balance_wallet_errors
 

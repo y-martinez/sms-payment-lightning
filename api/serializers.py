@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 from app.models import Wallet, User
 from datetime import datetime
@@ -24,7 +25,8 @@ class WalletSerializerBalance(serializers.ModelSerializer):
 
     def get_balance_usd(self, wallet):
         current_rate = self.context
-        return wallet.balance * current_rate["rate"]["value"]
+        balance_btc = wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
+        return balance_btc * current_rate["rate"]["value"]
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -13,9 +13,9 @@ class Wallet(models.Model):
         unique=True,
         validators=[RegexValidator(regex="^(tb1|[2nm]|bcrt)[a-zA-HJ-NP-Z0-9]{25,42}$")],
     )
-    balance = models.FloatField(
-        default=0.0,
-        validators=[MinValueValidator(0.00000001), MaxValueValidator(99.00000000)],
+    balance = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(1000000000)],
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -48,7 +48,7 @@ class User(AbstractUser):
 
 class Payment(models.Model):
     description = models.CharField(max_length=120, blank=True, null=True)
-    value = models.IntegerField(
+    value = models.PositiveIntegerField(
         validators=[MinValueValidator(100), MaxValueValidator(100000000)]
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -73,7 +73,7 @@ class Invoice(models.Model):
         validators=[RegexValidator(regex="^lntb(\d{1,12})(\w{200,550})$")],
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    value = models.IntegerField(
+    value = models.PositiveIntegerField(
         validators=[MinValueValidator(100), MaxValueValidator(100000000)]
     )
     payer = models.ForeignKey(
