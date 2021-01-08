@@ -36,7 +36,7 @@ class WalletFactory(factory.django.DjangoModelFactory):
         string_format="tb1?#?#?#?##??##???#?#?#?#??#?#?#?#?#??##?",
         letters="abcdefghijklmnopqrstuvwxyz",
     )
-    balance = factory.Faker("pydecimal", left_digits=1, right_digits=8, positive=True)
+    balance = factory.Faker("pyint", min_value=1, max_value=10000000)
 
 
 class UserFactory(factory.django.DjangoModelFactory):
