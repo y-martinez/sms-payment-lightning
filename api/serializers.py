@@ -46,30 +46,32 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PaymentSerializer(serializers.ModelSerializer):
     payer = serializers.SlugRelatedField(
-        queryset=User.objects.all(), slug_field="username"
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
     )
     payee = serializers.SlugRelatedField(
-        queryset=User.objects.all(), slug_field="username"
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
     )
 
     class Meta:
         model = Payment
         fields = ["description", "value", "payer", "payee"]
+        extra_kwargs = {
+            "value": {
+                "error_messages": {
+                    "min_value": "The payment amount should be greater than or equal to 100 satoshis"
+                }
+            }
+        }
 
     def validate(self, data):
-        getcontext().prec = 8
         if data["payer"] == data["payee"]:
             raise serializers.ValidationError(
-                {"payeer": "payee must be different from payer"}
+                {"payer": "Payee must be different from payer"}
             )
-
-        value_btc = Decimal(data["value"]) * Decimal(
-            settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        )
-        value_btc = Decimal(value_btc)
-
-        if data["payer"].wallet.balance < value_btc:
-            raise serializers.ValidationError(
-                {"payeer": "payer has insufficient funds"}
-            )
+        if data["payer"].wallet.balance < data["value"]:
+            raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
         return data

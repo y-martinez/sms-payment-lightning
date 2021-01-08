@@ -186,23 +186,19 @@ class PaymentViewSet(
         return Response(data)
 
     def create(self, request, *args, **kwargs):
-        getcontext().prec = 8
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
 
-        value_btc = Decimal(data["value"]) * Decimal(
-            settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        )
-        value_btc = Decimal(value_btc)
+        value_satoshi = data["value"]
 
         user_payer = User.objects.get(username=data["payer"])
         user_payee = User.objects.get(username=data["payee"])
 
-        user_payer.wallet.balance = Decimal(user_payer.wallet.balance - value_btc)
-        user_payee.wallet.balance = Decimal(user_payee.wallet.balance + value_btc)
+        user_payer.wallet.balance = user_payer.wallet.balance - value_satoshi
+        user_payee.wallet.balance = user_payee.wallet.balance + value_satoshi
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
