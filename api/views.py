@@ -63,7 +63,7 @@ class GetWalletBalance(generics.RetrieveAPIView):
     serializer_class = WalletSerializerBalance
 
     def get(self, request, *args, **kwargs):
-        response = get_current_rate(self)
+        response = get_current_rate()
 
         if "error" in response.keys():
             return Response(
@@ -186,7 +186,23 @@ class PaymentViewSet(
         return Response(data)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data_keys = request.data.keys()
+        if "type_of_payment" in data_keys and request.data["type_of_payment"] == "usd":
+            response = get_current_rate()
+            if "error" in response.keys():
+                return Response(
+                    data={"error": response["error"]}, status=response["status_code"]
+                )
+            else:
+                response = {
+                    "rate": {
+                        "code": "USD",
+                        "value": response["bpi"]["USD"]["rate_float"],
+                    }
+                }
+            serializer = self.get_serializer(data=request.data, context=response)
+        else:
+            serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 

@@ -45,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    TYPE_OF_PAYMENT_CHOICES = (("usd", "usd"), ("btc", "btc"), ("sat", "sat"))
     payer = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field="username",
@@ -56,9 +57,28 @@ class PaymentSerializer(serializers.ModelSerializer):
         error_messages={"does_not_exist": "The user {value} does not exist"},
     )
 
+    type_of_payment = serializers.ChoiceField(
+        choices=TYPE_OF_PAYMENT_CHOICES,
+        write_only=True,
+        required=True,
+        error_messages={
+            "required": "You must specify a type of payment",
+            "null": "You must specify a type of payment",
+            "invalid_choice": "You must specify a valid type of payment",
+        },
+    )
+
     class Meta:
         model = Payment
-        fields = ["description", "value", "payer", "payee"]
+        fields = [
+            "description",
+            "value",
+            "payer",
+            "payee",
+            "type_of_payment",
+            "created_at",
+        ]
+        read_only_fields = ["created_at"]
         extra_kwargs = {
             "value": {
                 "error_messages": {
@@ -67,6 +87,31 @@ class PaymentSerializer(serializers.ModelSerializer):
                 }
             }
         }
+
+    def to_internal_value(self, instance):
+        factor = settings.CRYPTO_CONSTANTS["BTC_TO_SAT_FACTOR"]
+        if "value" in instance.keys() and "type_of_payment" in instance.keys():
+            if isinstance(instance["value"], float) and isinstance(
+                instance["type_of_payment"], str
+            ):
+                if instance["type_of_payment"] == "btc":
+                    instance["value"] = instance["value"] * factor
+                    instance["value"] = float(round(instance["value"], 8))
+                    instance["value"] = int(instance["value"])
+
+                if instance["type_of_payment"] == "usd":
+                    current_rate = self.context
+                    instance["value"] = instance["value"] * factor
+                    instance["value"] = (
+                        instance["value"] / current_rate["rate"]["value"]
+                    )
+                    instance["value"] = float(round(instance["value"], 8))
+                    instance["value"] = int(instance["value"])
+        return super().to_internal_value(instance)
+
+    def create(self, validated_data):
+        validated_data.pop("type_of_payment", None)
+        return super().create(validated_data)
 
     def validate(self, data):
         if data["payer"] == data["payee"]:

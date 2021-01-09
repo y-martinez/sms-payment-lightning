@@ -62,7 +62,7 @@ data_list_webhooks = [
     }
 ]
 
-data_balance_wallet = {
+data_rate = {
     "time": {
         "updated": "Dec 31, 2020 21:00:00 UTC",
         "updatedISO": "2020-12-31T21:00:00+00:00",
