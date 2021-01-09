@@ -35,11 +35,13 @@ class TestPaymentView(APITestCase):
         amount_sat = data_to_pay["value"]
         data_to_pay["type_of_payment"] = "usd"
         amount_btc = amount_sat * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        data_to_pay["value"] = amount_btc * self.expected_rate_data["bpi"]["USD"]["rate_float"]
+        data_to_pay["value"] = (
+            amount_btc * self.expected_rate_data["bpi"]["USD"]["rate_float"]
+        )
 
-        response = self.client.post(self.url, data=data_to_pay,format="json")
+        response = self.client.post(self.url, data=data_to_pay, format="json")
         eq_(response.status_code, status.HTTP_201_CREATED)
-        
+
         user_payer_updated = User.objects.get(pk=self.user_payer.id)
         user_payee_updated = User.objects.get(pk=self.user_payee.id)
 
@@ -48,8 +50,6 @@ class TestPaymentView(APITestCase):
 
         eq_(payer_balance_expected, user_payer_updated.wallet.balance)
         eq_(payee_balance_expected, user_payee_updated.wallet.balance)
-
-
 
     def test_payment_with_btc_data_ok(self):
         data_to_pay = self.data_to_pay
@@ -78,7 +78,7 @@ class TestPaymentView(APITestCase):
         data_to_pay["type_of_payment"] = "sat"
         amount_sat = data_to_pay["value"]
 
-        response = self.client.post(self.url, data=self.data_to_pay , format="json")
+        response = self.client.post(self.url, data=self.data_to_pay, format="json")
         eq_(response.status_code, status.HTTP_201_CREATED)
 
         user_payer_updated = User.objects.get(pk=self.user_payer.id)
@@ -140,9 +140,14 @@ class TestPaymentView(APITestCase):
         eq_(response.data["payer"][0], "This field is required.")
         eq_(response.data["payee"][0], "This field is required.")
 
-        response = self.client.post(self.url, data={"type_of_payment":"test"}, format="json")
+        response = self.client.post(
+            self.url, data={"type_of_payment": "test"}, format="json"
+        )
         eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
-        eq_(response.data["type_of_payment"][0], "You must specify a valid type of payment")
+        eq_(
+            response.data["type_of_payment"][0],
+            "You must specify a valid type of payment",
+        )
 
     def test_get_all_payments(self):
         response = self.client.get(self.url)
