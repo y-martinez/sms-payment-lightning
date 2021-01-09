@@ -27,6 +27,21 @@ class TestPaymentView(APITestCase):
 
         self.expected_rate_data = data_rate
 
+    def send_to_payment(self, data, amount_sat):
+        response = {}
+        response["api_response"] = self.client.post(self.url, data=data, format="json")
+
+        response["user_payer_updated"] = User.objects.get(pk=self.user_payer.id)
+        response["user_payee_updated"] = User.objects.get(pk=self.user_payee.id)
+
+        response["user_payer_updated"] = response["user_payer_updated"].wallet.balance
+        response["user_payee_updated"] = response["user_payee_updated"].wallet.balance
+
+        response["payer_balance_expected"] = self.user_payer.wallet.balance - amount_sat
+        response["payee_balance_expected"] = self.user_payee.wallet.balance + amount_sat
+
+        return response
+
     @patch("app.services.requests.get")
     def test_payment_with_usd_data_ok(self, mock_method):
         mock_method.return_value.json.return_value = self.expected_rate_data
@@ -39,17 +54,11 @@ class TestPaymentView(APITestCase):
             amount_btc * self.expected_rate_data["bpi"]["USD"]["rate_float"]
         )
 
-        response = self.client.post(self.url, data=data_to_pay, format="json")
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        response = self.send_to_payment(data_to_pay, amount_sat)
 
-        user_payer_updated = User.objects.get(pk=self.user_payer.id)
-        user_payee_updated = User.objects.get(pk=self.user_payee.id)
-
-        payer_balance_expected = self.user_payer.wallet.balance - amount_sat
-        payee_balance_expected = self.user_payee.wallet.balance + amount_sat
-
-        eq_(payer_balance_expected, user_payer_updated.wallet.balance)
-        eq_(payee_balance_expected, user_payee_updated.wallet.balance)
+        eq_(response["api_response"].status_code, status.HTTP_201_CREATED)
+        eq_(response["payer_balance_expected"], response["user_payer_updated"])
+        eq_(response["payee_balance_expected"], response["user_payee_updated"])
 
     def test_payment_with_btc_data_ok(self):
         data_to_pay = self.data_to_pay
@@ -61,34 +70,22 @@ class TestPaymentView(APITestCase):
 
         data_to_pay["value"] = float(round(data_to_pay["value"], 8))
 
-        response = self.client.post(self.url, data=data_to_pay, format="json")
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        response = self.send_to_payment(data_to_pay, amount_sat)
 
-        user_payer_updated = User.objects.get(pk=self.user_payer.id)
-        user_payee_updated = User.objects.get(pk=self.user_payee.id)
-
-        payer_balance_expected = self.user_payer.wallet.balance - amount_sat
-        payee_balance_expected = self.user_payee.wallet.balance + amount_sat
-
-        eq_(payer_balance_expected, user_payer_updated.wallet.balance)
-        eq_(payee_balance_expected, user_payee_updated.wallet.balance)
+        eq_(response["api_response"].status_code, status.HTTP_201_CREATED)
+        eq_(response["payer_balance_expected"], response["user_payer_updated"])
+        eq_(response["payee_balance_expected"], response["user_payee_updated"])
 
     def test_payment_with_satoshis_data_ok(self):
         data_to_pay = self.data_to_pay
         data_to_pay["type_of_payment"] = "sat"
         amount_sat = data_to_pay["value"]
 
-        response = self.client.post(self.url, data=self.data_to_pay, format="json")
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        response = self.send_to_payment(data_to_pay, amount_sat)
 
-        user_payer_updated = User.objects.get(pk=self.user_payer.id)
-        user_payee_updated = User.objects.get(pk=self.user_payee.id)
-
-        payer_balance_expected = self.user_payer.wallet.balance - amount_sat
-        payee_balance_expected = self.user_payee.wallet.balance + amount_sat
-
-        eq_(payer_balance_expected, user_payer_updated.wallet.balance)
-        eq_(payee_balance_expected, user_payee_updated.wallet.balance)
+        eq_(response["api_response"].status_code, status.HTTP_201_CREATED)
+        eq_(response["payer_balance_expected"], response["user_payer_updated"])
+        eq_(response["payee_balance_expected"], response["user_payee_updated"])
 
     def test_payment_with_satatoshis_data_not_ok(self):
         data_to_pay = self.data_to_pay

@@ -227,4 +227,5 @@ class Common(Configuration):
     CRYPTO_CONSTANTS = {
         "SAT_TO_BTC_FACTOR": 0.00000001,
         "BTC_TO_SAT_FACTOR": 100000000,
+        "PRECISION": 8,
     }

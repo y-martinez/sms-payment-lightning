@@ -24,7 +24,7 @@ class WalletSerializerBalance(serializers.ModelSerializer):
         return datetime.now().strftime("%I:%M %p, %d-%m-%Y")
 
     def get_balance_usd(self, wallet):
-        current_rate = self.context
+        current_rate = self.context["rate"]
         balance_btc = wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
         return balance_btc * current_rate["rate"]["value"]
 
@@ -96,16 +96,20 @@ class PaymentSerializer(serializers.ModelSerializer):
             ):
                 if instance["type_of_payment"] == "btc":
                     instance["value"] = instance["value"] * factor
-                    instance["value"] = float(round(instance["value"], 8))
+                    instance["value"] = float(
+                        round(instance["value"], settings.CRYPTO_CONSTANTS["PRECISION"])
+                    )
                     instance["value"] = int(instance["value"])
 
                 if instance["type_of_payment"] == "usd":
-                    current_rate = self.context
+                    current_rate = self.context["rate"]
                     instance["value"] = instance["value"] * factor
                     instance["value"] = (
                         instance["value"] / current_rate["rate"]["value"]
                     )
-                    instance["value"] = float(round(instance["value"], 8))
+                    instance["value"] = float(
+                        round(instance["value"], settings.CRYPTO_CONSTANTS["PRECISION"])
+                    )
                     instance["value"] = int(instance["value"])
         return super().to_internal_value(instance)
 

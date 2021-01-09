@@ -75,7 +75,7 @@ class GetWalletBalance(generics.RetrieveAPIView):
             }
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, context=response)
+        serializer = self.get_serializer(instance, context={"rate": response})
         return Response(serializer.data)
 
 
@@ -200,7 +200,9 @@ class PaymentViewSet(
                         "value": response["bpi"]["USD"]["rate_float"],
                     }
                 }
-            serializer = self.get_serializer(data=request.data, context=response)
+            serializer = self.get_serializer(
+                data=request.data, context={"rate": response}
+            )
         else:
             serializer = self.get_serializer(data=request.data)
 
