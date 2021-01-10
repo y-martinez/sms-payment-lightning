@@ -6,7 +6,7 @@ from unittest.mock import patch
 from rest_framework import status
 from .factories import WalletFactory
 from .data_fake import (
-    data_balance_wallet,
+    data_rate,
     data_wallet_errors,
     data_balance_wallet_errors,
 )
@@ -98,7 +98,7 @@ class TestWalletBalanceTestCase(APITestCase):
     def setUp(self):
         self.wallet = WalletFactory.create()
         self.url = reverse("wallet-balance", kwargs={"address": self.wallet.address})
-        self.expected_rate_data = data_balance_wallet
+        self.expected_rate_data = data_rate
 
         self.balance_usd_expected = (
             self.wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]

@@ -63,19 +63,23 @@ class GetWalletBalance(generics.RetrieveAPIView):
     serializer_class = WalletSerializerBalance
 
     def get(self, request, *args, **kwargs):
-        response = get_current_rate(self)
+        coindesk_response = get_current_rate()
 
-        if "error" in response.keys():
+        if "error" in coindesk_response.keys():
             return Response(
-                data={"error": response["error"]}, status=response["status_code"]
+                data={"error": coindesk_response["error"]},
+                status=coindesk_response["status_code"],
             )
         else:
-            response = {
-                "rate": {"code": "USD", "value": response["bpi"]["USD"]["rate_float"]}
+            coindesk_response = {
+                "rate": {
+                    "code": "USD",
+                    "value": coindesk_response["bpi"]["USD"]["rate_float"],
+                }
             }
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, context=response)
+        serializer = self.get_serializer(instance, context={"rate": coindesk_response})
         return Response(serializer.data)
 
 
@@ -186,7 +190,26 @@ class PaymentViewSet(
         return Response(data)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data_keys = request.data.keys()
+        if "type_of_payment" in data_keys and request.data["type_of_payment"] == "usd":
+            coindesk_response = get_current_rate()
+            if "error" in coindesk_response.keys():
+                return Response(
+                    data={"error": coindesk_response["error"]},
+                    status=coindesk_response["status_code"],
+                )
+            else:
+                coindesk_response = {
+                    "rate": {
+                        "code": "USD",
+                        "value": coindesk_response["bpi"]["USD"]["rate_float"],
+                    }
+                }
+            serializer = self.get_serializer(
+                data=request.data, context={"rate": coindesk_response}
+            )
+        else:
+            serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 

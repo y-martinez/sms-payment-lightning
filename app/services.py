@@ -38,7 +38,7 @@ def subscribe_to_address_webhook(request, address) -> str:
     )
 
 
-def get_current_rate(self, code="USD") -> Dict:
+def get_current_rate(code="USD") -> Dict:
     endpoint = "https://api.coindesk.com/v1/bpi/currentprice"
     try:
         response = requests.get(f"{endpoint}/{code}.json")
