@@ -27,11 +27,12 @@ class WalletSerializerBalance(serializers.ModelSerializer):
     def get_balance_usd(self, wallet):
         current_rate = self.context["rate"]
         balance_btc = wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        return round(balance_btc * current_rate["rate"]["value"],2)
+        return round(balance_btc * current_rate["rate"]["value"], 2)
 
     def get_current_rate_usd(self, wallet):
         current_rate = self.context["rate"]
         return current_rate["rate"]["value"]
+
 
 class UserSerializer(serializers.ModelSerializer):
     wallet = WalletSerializer(read_only=True)
