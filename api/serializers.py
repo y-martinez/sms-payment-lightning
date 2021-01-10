@@ -14,10 +14,11 @@ class WalletSerializer(serializers.ModelSerializer):
 class WalletSerializerBalance(serializers.ModelSerializer):
     balance_usd = serializers.SerializerMethodField()
     date_updated = serializers.SerializerMethodField()
+    current_rate_usd = serializers.SerializerMethodField()
 
     class Meta:
         model = Wallet
-        fields = ["balance", "balance_usd", "date_updated"]
+        fields = ["balance", "balance_usd", "current_rate_usd", "date_updated"]
         read_only_fields = ["balance"]
 
     def get_date_updated(self, wallet):
@@ -26,8 +27,11 @@ class WalletSerializerBalance(serializers.ModelSerializer):
     def get_balance_usd(self, wallet):
         current_rate = self.context["rate"]
         balance_btc = wallet.balance * settings.CRYPTO_CONSTANTS["SAT_TO_BTC_FACTOR"]
-        return balance_btc * current_rate["rate"]["value"]
+        return round(balance_btc * current_rate["rate"]["value"],2)
 
+    def get_current_rate_usd(self, wallet):
+        current_rate = self.context["rate"]
+        return current_rate["rate"]["value"]
 
 class UserSerializer(serializers.ModelSerializer):
     wallet = WalletSerializer(read_only=True)
