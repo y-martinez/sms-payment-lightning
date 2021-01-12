@@ -7,12 +7,13 @@ from app.services import (
     unsubscribe_webhook_address,
     subscribe_to_address_webhook,
 )
-from app.models import Wallet, User, Payment
+from app.models import Wallet, User, Payment, Invoice
 from api.serializers import (
     WalletSerializer,
     WalletSerializerBalance,
     UserSerializer,
     PaymentSerializer,
+    InvoiceSerializer,
 )
 
 
@@ -228,6 +229,63 @@ class PaymentViewSet(
 
         user_payer.wallet.save()
         user_payee.wallet.save()
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class InvoiceViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceSerializer
+
+    def get_paginated_response(self, data):
+        return Response(data)
+
+    def create(self, request, *args, **kwargs):
+        if "bolt11_invoice" in request.data.keys():
+            response_lnd = client.info_payreq(request.data["bolt11_invoice"])
+
+            if "error" in response_lnd.keys():
+                return Response(
+                    data={"error": response_lnd["error"]},
+                    status=response_lnd["status_code"],
+                )
+
+        value_sat_without_fee = int(response_lnd["num_satoshis"])
+        serializer = self.get_serializer(
+            data=request.data, context={"value": value_sat_without_fee}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        response_lnd = client.pay_invoice(request.data["bolt11_invoice"])
+
+        if "error" in response_lnd.keys():
+            return Response(
+                data={"error": response_lnd["error"]},
+                status=response_lnd["status_code"],
+            )
+
+        value_sat_with_fee = int(response_lnd["payment_route"]["total_amt"])
+        serializer = self.get_serializer(
+            data=request.data, context={"value": value_sat_with_fee}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        user_payer = User.objects.get(username=data["payer"])
+        user_payer.wallet.balance = user_payer.wallet.balance - value_sat_with_fee
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        user_payer.wallet.save()
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )

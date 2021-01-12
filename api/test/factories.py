@@ -1,5 +1,6 @@
 import factory
 import phonenumbers
+import string
 from faker.providers.phone_number.en_US import Provider
 from faker import Faker
 
@@ -36,7 +37,7 @@ class WalletFactory(factory.django.DjangoModelFactory):
         string_format="tb1?#?#?#?##??##???#?#?#?#??#?#?#?#?#??##?",
         letters="abcdefghijklmnopqrstuvwxyz",
     )
-    balance = factory.Faker("pyint", min_value=1, max_value=10000000)
+    balance = factory.Faker("pyint", min_value=50000, max_value=10000000)
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -57,3 +58,22 @@ class PaymentFactory(factory.django.DjangoModelFactory):
     description = factory.Faker("text", max_nb_chars=100)
     payer = factory.SubFactory(UserFactory)
     payee = factory.SubFactory(UserFactory)
+
+
+class InvoiceFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "app.Invoice"
+
+    value = factory.Faker("pyint", min_value=100, max_value=50000)
+    payer = factory.SubFactory(UserFactory)
+    bolt11_invoice = factory.Sequence(
+        lambda n: "lntb10n1p0lh85wpp5xrwns2zw25ukgezve4lgfq4qvxjapc3yxgj4swlzmrc4lh2zmr19"
+        "sdqqcqzpgxqyz5vqsp5qecmn59nc5pxapcy2gsmwdx0kplqr99x5pj9pzv0wumlwppmy0ss9qyyssqg7"
+        "8n363qf5jfr5dk2e3xadffff52cpjvcjsuumqrht6t7hyh73hyyncreaw3ynq9qp0t58hff2u29n8vaw"
+        "w8zz2lk4u9cmq6k89eg6gpazqjly"
+        + "".join(
+            fake.random_elements(
+                elements=(string.ascii_uppercase + string.digits), length=9, unique=True
+            )
+        ).lower()
+    )

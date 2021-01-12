@@ -69,7 +69,7 @@ class Payment(models.Model):
 class Invoice(models.Model):
     bolt11_invoice = models.CharField(
         max_length=500,
-        null=True,
+        unique=True,
         validators=[RegexValidator(regex="^lntb(\d{1,12})(\w{200,550})$")],
     )
     created_at = models.DateTimeField(auto_now_add=True)

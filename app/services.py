@@ -81,3 +81,66 @@ class LndRestClient:
             }
 
         return response.json()
+
+    def info_payreq(self, payment_request) -> Dict:
+        try:
+            response = requests.get(
+                f"{self.endpoint}/v1/payreq/{payment_request}",
+                headers=self.auth,
+                verify=self.cert,
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as errh:
+            if "error" in errh.response.json().keys():
+                return {
+                    "error": errh.response.json()["message"],
+                    "status_code": errh.response.status_code,
+                }
+            return {
+                "error": errh.response.text,
+                "status_code": errh.response.status_code,
+            }
+        except requests.exceptions.RequestException:
+            return {
+                "error": f"Unable to connect to {self.endpoint}",
+                "status_code": 500,
+            }
+        data_payment = response.json()
+        if "payment_error" in data_payment.keys():
+            return {
+                "error": data_payment["payment_error"],
+                "status_code": 400,
+            }
+        return response.json()
+
+    def pay_invoice(self, payment_request) -> Dict:
+        try:
+            response = requests.post(
+                f"{self.endpoint}/v1/channels/transactions",
+                json={"payment_request": payment_request},
+                headers=self.auth,
+                verify=self.cert,
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as errh:
+            if "error" in errh.response.json().keys():
+                return {
+                    "error": errh.response.json()["message"],
+                    "status_code": errh.response.status_code,
+                }
+            return {
+                "error": errh.response.text,
+                "status_code": errh.response.status_code,
+            }
+        except requests.exceptions.RequestException:
+            return {
+                "error": f"Unable to connect to {self.endpoint}",
+                "status_code": 500,
+            }
+        data_payment = response.json()
+        if "payment_error" in data_payment.keys():
+            return {
+                "error": data_payment["payment_error"],
+                "status_code": 400,
+            }
+        return response.json()

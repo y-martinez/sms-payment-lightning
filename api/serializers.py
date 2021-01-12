@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from app.models import Wallet, User, Payment
+from app.models import Wallet, User, Payment, Invoice
 from datetime import datetime
 
 
@@ -128,5 +128,29 @@ class PaymentSerializer(serializers.ModelSerializer):
                 {"payer": "Payee must be different from payer"}
             )
         if data["payer"].wallet.balance < data["value"]:
+            raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
+        return data
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+
+    payer = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
+    )
+
+    class Meta:
+        model = Invoice
+        fields = ["bolt11_invoice", "created_at", "payer"]
+        extra_kwargs = {"value": {"write_only": True}}
+
+    def create(self, validated_data):
+        validated_data["value"] = self.context["value"]
+        return super().create(validated_data)
+
+    def validate(self, data):
+        value = self.context["value"]
+        if data["payer"].wallet.balance < value:
             raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
         return data

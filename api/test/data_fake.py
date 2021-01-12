@@ -93,3 +93,58 @@ data_wallet_errors = [
     },
     {"error": "Not found", "status_code": 404},
 ]
+
+
+data_info_payreq = {
+    "destination": "030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516",
+    "payment_hash": "024f6669fb36ce15536e0d2a8249cfa3a94778c6469ab07c212437d43b755684",
+    "num_satoshis": "1000",
+    "timestamp": "1610325941",
+    "expiry": "86400",
+    "cltv_expiry": "40",
+    "payment_addr": "QxUaTHrldiDJG/F3kP8pOa8iH4WXaX2vwXIRSZO7eBg=",
+    "num_msat": "1000000",
+    "features": {
+        "9": {"name": "tlv-onion", "is_known": True},
+        "14": {"name": "payment-addr", "is_required": True, "is_known": True},
+        "17": {"name": "multi-path-payments", "is_known": True},
+    },
+}
+
+data_invoice_paid = {
+    "payment_preimage": "9X7IYxn6UFWERsGvUCAJJLXklfoaHmtcPJIpFGstT+k=",
+    "payment_route": {
+        "total_time_lock": 1903449,
+        "total_fees": "1",
+        "total_amt": "1001",
+        "hops": [
+            {
+                "chan_id": "2092769750382477313",
+                "chan_capacity": "2250000",
+                "amt_to_forward": "1000",
+                "fee": "1",
+                "expiry": 1903409,
+                "amt_to_forward_msat": "1000000",
+                "fee_msat": "1005",
+                "pub_key": "038863cf8ab91046230f561cd5b386cbff8309fa02e3f0c3ed161a3aeb64a643b9",
+                "tlv_payload": True,
+            },
+            {
+                "chan_id": "2011864386272559104",
+                "chan_capacity": "20000000",
+                "amt_to_forward": "1000",
+                "expiry": 1903409,
+                "amt_to_forward_msat": "1000000",
+                "pub_key": "030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516",
+                "tlv_payload": True,
+                "mpp_record": {
+                    "payment_addr": "3pyqbkuNrAldKCtW5ghJKealtdSyXm5P/OQ6LAw1Tvk=",
+                    "total_amt_msat": "1000000",
+                },
+            },
+        ],
+        "total_fees_msat": "1005",
+        "total_amt_msat": "1001005",
+    },
+    "payment_hash": "d3HOkjDiuYERcCMdpds+2bG8jQEn8u4HqdPyiLVHH5w=",
+}
