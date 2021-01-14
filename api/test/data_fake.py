@@ -93,3 +93,97 @@ data_wallet_errors = [
     },
     {"error": "Not found", "status_code": 404},
 ]
+
+
+data_info_payreq = {
+    "destination": "030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516",
+    "payment_hash": "024f6669fb36ce15536e0d2a8249cfa3a94778c6469ab07c212437d43b755684",
+    "num_satoshis": "1000",
+    "timestamp": "1610325941",
+    "expiry": "86400",
+    "cltv_expiry": "40",
+    "payment_addr": "QxUaTHrldiDJG/F3kP8pOa8iH4WXaX2vwXIRSZO7eBg=",
+    "num_msat": "1000000",
+    "features": {
+        "9": {"name": "tlv-onion", "is_known": True},
+        "14": {"name": "payment-addr", "is_required": True, "is_known": True},
+        "17": {"name": "multi-path-payments", "is_known": True},
+    },
+}
+
+data_invoice_paid = {
+    "payment_preimage": "9X7IYxn6UFWERsGvUCAJJLXklfoaHmtcPJIpFGstT+k=",
+    "payment_route": {
+        "total_time_lock": 1903449,
+        "total_fees": "1",
+        "total_amt": "1001",
+        "hops": [
+            {
+                "chan_id": "2092769750382477313",
+                "chan_capacity": "2250000",
+                "amt_to_forward": "1000",
+                "fee": "1",
+                "expiry": 1903409,
+                "amt_to_forward_msat": "1000000",
+                "fee_msat": "1005",
+                "pub_key": "038863cf8ab91046230f561cd5b386cbff8309fa02e3f0c3ed161a3aeb64a643b9",
+                "tlv_payload": True,
+            },
+            {
+                "chan_id": "2011864386272559104",
+                "chan_capacity": "20000000",
+                "amt_to_forward": "1000",
+                "expiry": 1903409,
+                "amt_to_forward_msat": "1000000",
+                "pub_key": "030f1784fafe1b5b143e4e4545e6c2f612943c60e6a5b770b35e324c60b6ae9516",
+                "tlv_payload": True,
+                "mpp_record": {
+                    "payment_addr": "3pyqbkuNrAldKCtW5ghJKealtdSyXm5P/OQ6LAw1Tvk=",
+                    "total_amt_msat": "1000000",
+                },
+            },
+        ],
+        "total_fees_msat": "1005",
+        "total_amt_msat": "1001005",
+    },
+    "payment_hash": "d3HOkjDiuYERcCMdpds+2bG8jQEn8u4HqdPyiLVHH5w=",
+}
+
+
+data_invoice_not_paid = {
+    "error_invoice_payreq_malformatted": {
+        "error": "string not all lowercase or all uppercase",
+        "message": "string not all lowercase or all uppercase",
+        "code": 2,
+    },
+    "error_invoice_checksum": {
+        "error": "checksum failed. Expected 40jxz5, got c3de33.",
+        "code": 2,
+        "message": "checksum failed. Expected 40jxz5, got c3de33.",
+        "details": [],
+    },
+    "error_invoice_expired": {
+        "error": "invoice expired. Valid until 2020-12-18 06:15:24 +0000 UTC",
+        "code": 2,
+        "message": "invoice expired. Valid until 2020-12-18 06:15:24 +0000 UTC",
+        "details": [],
+    },
+    "error_invoice_paid": {
+        "payment_error": "invoice is already paid",
+        "payment_preimage": None,
+        "payment_route": None,
+        "payment_hash": "K+UyZ2hP7ekVb5w4q3IxyZD2EyujsJ9QZemK009OLzk=",
+    },
+    "error_invoice_incorrect": {
+        "payment_error": "IncorrectOrUnknownPaymentDetails(amt=50000000 mSAT, height=1903394)@3",
+        "payment_hash": "dFZv1l9akc9gWgJi6wKwD5r7yCLyH9fNAUDMJNpJCI8=",
+    },
+    "error_invoice_in_transition": {
+        "payment_error": "payment is in transition",
+        "payment_hash": "dFZv1l9akc9gWgJi6wKwD5r7yCLyH9fNAUDMJNpJCI8=",
+    },
+    "error_invoice_no_route": {
+        "payment_error": "unable to find a path to destination",
+        "payment_hash": "FKFqrav204kRKrjUqzLfNJrMUL1zh+7rAFkkOzizsBQ=",
+    },
+}

@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from app.models import Wallet, User, Payment
+from app.models import Wallet, User, Payment, Invoice
 from datetime import datetime
 
 
@@ -130,3 +130,41 @@ class PaymentSerializer(serializers.ModelSerializer):
         if data["payer"].wallet.balance < data["value"]:
             raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
         return data
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    details = serializers.SerializerMethodField()
+    payer = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field="username",
+        error_messages={"does_not_exist": "The user {value} does not exist"},
+    )
+
+    class Meta:
+        model = Invoice
+        fields = ["bolt11_invoice", "created_at", "payer", "details"]
+        extra_kwargs = {"value": {"write_only": True}, "fee": {"write_only": True}}
+
+    def create(self, validated_data):
+        validated_data["value"] = self.context["value"]
+        validated_data["fee"] = self.context["fee"]
+        validated_data["description"] = self.context["description"]
+        validated_data["hops"] = self.context["hops"]
+        return super().create(validated_data)
+
+    def validate(self, data):
+        value = self.context["value"]
+        if data["payer"].wallet.balance < value:
+            raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
+        return data
+
+    def get_details(self, invoice):
+        details = {
+            "total_value": invoice.value,
+            "value": invoice.value - invoice.fee,
+            "fee": invoice.fee,
+            "hops": invoice.hops,
+        }
+        if invoice.description is not None:
+            details["concept"] = invoice.description
+        return details

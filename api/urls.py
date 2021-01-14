@@ -8,6 +8,7 @@ from .views import (
     UserViewSet,
     RefillWebHook,
     PaymentViewSet,
+    InvoiceViewSet,
 )
 
 
@@ -15,6 +16,7 @@ router = DefaultRouter()
 router.register(r"wallets", WalletViewSet)
 router.register(r"users", UserViewSet)
 router.register(r"payments", PaymentViewSet)
+router.register(r"invoices", InvoiceViewSet)
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),
