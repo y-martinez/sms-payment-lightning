@@ -285,7 +285,7 @@ class InvoiceViewSet(
                 "value": value_sat_with_fee,
                 "fee": payment_fee,
                 "description": payment_description,
-                "hops": payment_hops
+                "hops": payment_hops,
             },
         )
         serializer.is_valid(raise_exception=True)
