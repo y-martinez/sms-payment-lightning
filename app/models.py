@@ -67,6 +67,10 @@ class Payment(models.Model):
 
 
 class Invoice(models.Model):
+    description = models.CharField(max_length=250, blank=True, null=True)
+    hops = models.PositiveIntegerField(
+        default=1, validators=[MinValueValidator(1), MaxValueValidator(100000000)]
+    )
     bolt11_invoice = models.CharField(
         max_length=500,
         unique=True,
@@ -74,7 +78,10 @@ class Invoice(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     value = models.PositiveIntegerField(
-        validators=[MinValueValidator(100), MaxValueValidator(100000000)]
+        validators=[MinValueValidator(1), MaxValueValidator(100000000)]
+    )
+    fee = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(100000000)]
     )
     payer = models.ForeignKey(
         User, related_name="payer_invoices", on_delete=models.CASCADE

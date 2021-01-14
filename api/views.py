@@ -257,6 +257,10 @@ class InvoiceViewSet(
                 )
 
         value_sat_without_fee = int(response_lnd["num_satoshis"])
+        payment_description = None
+        if "description" in response_lnd.keys():
+            payment_description = response_lnd["description"]
+
         serializer = self.get_serializer(
             data=request.data, context={"value": value_sat_without_fee}
         )
@@ -273,8 +277,16 @@ class InvoiceViewSet(
             )
 
         value_sat_with_fee = int(response_lnd["payment_route"]["total_amt"])
+        payment_hops = len(response_lnd["payment_route"]["hops"])
+        payment_fee = value_sat_with_fee - value_sat_without_fee
         serializer = self.get_serializer(
-            data=request.data, context={"value": value_sat_with_fee}
+            data=request.data,
+            context={
+                "value": value_sat_with_fee,
+                "fee": payment_fee,
+                "description": payment_description,
+                "hops": payment_hops
+            },
         )
         serializer.is_valid(raise_exception=True)
 

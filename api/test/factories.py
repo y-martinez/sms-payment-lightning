@@ -65,7 +65,9 @@ class InvoiceFactory(factory.django.DjangoModelFactory):
         model = "app.Invoice"
 
     value = factory.Faker("pyint", min_value=100, max_value=50000)
+    fee = factory.Faker("pyint", min_value=100, max_value=50000)
     payer = factory.SubFactory(UserFactory)
+    description = factory.Faker("text", max_nb_chars=100)
     bolt11_invoice = factory.Sequence(
         lambda n: "lntb10n1p0lh85wpp5xrwns2zw25ukgezve4lgfq4qvxjapc3yxgj4swlzmrc4lh2zmr19"
         "sdqqcqzpgxqyz5vqsp5qecmn59nc5pxapcy2gsmwdx0kplqr99x5pj9pzv0wumlwppmy0ss9qyyssqg7"

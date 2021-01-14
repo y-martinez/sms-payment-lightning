@@ -133,7 +133,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-
+    details = serializers.SerializerMethodField()
     payer = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field="username",
@@ -142,11 +142,14 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = ["bolt11_invoice", "created_at", "payer"]
-        extra_kwargs = {"value": {"write_only": True}}
+        fields = ["bolt11_invoice", "created_at", "payer", "details"]
+        extra_kwargs = {"value": {"write_only": True}, "fee": {"write_only": True}}
 
     def create(self, validated_data):
         validated_data["value"] = self.context["value"]
+        validated_data["fee"] = self.context["fee"]
+        validated_data["description"] = self.context["description"]
+        validated_data["hops"] = self.context["hops"]
         return super().create(validated_data)
 
     def validate(self, data):
@@ -154,3 +157,14 @@ class InvoiceSerializer(serializers.ModelSerializer):
         if data["payer"].wallet.balance < value:
             raise serializers.ValidationError({"payer": "Payer has insufficient funds"})
         return data
+
+    def get_details(self, invoice):
+        details = {
+            "total_value": invoice.value,
+            "value": invoice.value - invoice.fee,
+            "fee": invoice.fee,
+            "hops": invoice.hops,
+        }
+        if invoice.description is not None:
+            details["concept"] = invoice.description
+        return details
