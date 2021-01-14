@@ -69,6 +69,7 @@ class LndRestClient:
                 f"{self.endpoint}/v1/newaddress", headers=self.auth, verify=self.cert
             )
             response.raise_for_status()
+            return response.json()
         except requests.exceptions.HTTPError as errh:
             return {
                 "error": errh.response.text,
@@ -79,8 +80,6 @@ class LndRestClient:
                 "error": f"Unable to connect to {self.endpoint}",
                 "status_code": 500,
             }
-
-        return response.json()
 
     def info_payreq(self, payment_request) -> Dict:
         try:
@@ -106,6 +105,7 @@ class LndRestClient:
                 "status_code": 500,
             }
         data_payment = response.json()
+
         if "payment_error" in data_payment.keys():
             return {
                 "error": data_payment["payment_error"],

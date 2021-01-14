@@ -250,7 +250,6 @@ class InvoiceViewSet(
     def create(self, request, *args, **kwargs):
         if "bolt11_invoice" in request.data.keys():
             response_lnd = client.info_payreq(request.data["bolt11_invoice"])
-
             if "error" in response_lnd.keys():
                 return Response(
                     data={"error": response_lnd["error"]},

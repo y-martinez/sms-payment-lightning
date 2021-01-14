@@ -148,3 +148,42 @@ data_invoice_paid = {
     },
     "payment_hash": "d3HOkjDiuYERcCMdpds+2bG8jQEn8u4HqdPyiLVHH5w=",
 }
+
+
+data_invoice_not_paid = {
+    "error_invoice_payreq_malformatted": {
+        "error": "string not all lowercase or all uppercase",
+        "message": "string not all lowercase or all uppercase",
+        "code": 2,
+    },
+    "error_invoice_checksum": {
+        "error": "checksum failed. Expected 40jxz5, got c3de33.",
+        "code": 2,
+        "message": "checksum failed. Expected 40jxz5, got c3de33.",
+        "details": [],
+    },
+    "error_invoice_expired": {
+        "error": "invoice expired. Valid until 2020-12-18 06:15:24 +0000 UTC",
+        "code": 2,
+        "message": "invoice expired. Valid until 2020-12-18 06:15:24 +0000 UTC",
+        "details": [],
+    },
+    "error_invoice_paid": {
+        "payment_error": "invoice is already paid",
+        "payment_preimage": None,
+        "payment_route": None,
+        "payment_hash": "K+UyZ2hP7ekVb5w4q3IxyZD2EyujsJ9QZemK009OLzk=",
+    },
+    "error_invoice_incorrect": {
+        "payment_error": "IncorrectOrUnknownPaymentDetails(amt=50000000 mSAT, height=1903394)@3",
+        "payment_hash": "dFZv1l9akc9gWgJi6wKwD5r7yCLyH9fNAUDMJNpJCI8=",
+    },
+    "error_invoice_in_transition": {
+        "payment_error": "payment is in transition",
+        "payment_hash": "dFZv1l9akc9gWgJi6wKwD5r7yCLyH9fNAUDMJNpJCI8=",
+    },
+    "error_invoice_no_route": {
+        "payment_error": "unable to find a path to destination",
+        "payment_hash": "FKFqrav204kRKrjUqzLfNJrMUL1zh+7rAFkkOzizsBQ=",
+    },
+}
