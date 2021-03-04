@@ -79,6 +79,7 @@ class SmsWebhook(views.APIView):
                     message, from_phone_number, error_message="operation_error"
                 )
             else:
+                # Falta hacer la peticion a la API de LN
                 response = sms_client.create(from_phone_number)
 
         elif operation.lower() == "recargar":
@@ -87,6 +88,7 @@ class SmsWebhook(views.APIView):
                     message, from_phone_number, error_message="operation_error"
                 )
             else:
+                # Data de prueba, falta hacer la peticion a la API de LN
                 content_sms = "tb1qyc39cgnk49umarnslj3ffmtq4lttyda82ju0vd"
                 response = sms_client.reload(from_phone_number, content_sms)
 
@@ -96,6 +98,7 @@ class SmsWebhook(views.APIView):
                     message, from_phone_number, error_message="operation_error"
                 )
             else:
+                # Data de prueba, falta hacer la peticion a la API de LN
                 content_sms = (
                     "0.05511200",
                     "32512.54",
@@ -110,6 +113,7 @@ class SmsWebhook(views.APIView):
                     message, from_phone_number, error_message="operation_error"
                 )
             else:
+                # Data de prueba, falta hacer la peticion a la API de LN
                 content_sms = "0.00000500"
                 response = sms_client.pay(
                     from_phone_number, content_sms, type="successful"
@@ -121,6 +125,7 @@ class SmsWebhook(views.APIView):
                     message, from_phone_number, error_message="operation_error"
                 )
             else:
+                # Data de prueba, falta hacer la peticion a la API de LN
                 to_phone_number = message[3]
                 content_sms_payer = ("0.000042", "2.24", to_phone_number)
                 content_sms_payee = ("0.000042", "2.24")
@@ -247,8 +252,6 @@ class UserViewSet(
         )
 
     def create(self, request, *args, **kwargs):
-        print("HOLAAA")
-        print(request.data.get("phone_number"))
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

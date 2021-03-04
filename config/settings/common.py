@@ -231,6 +231,8 @@ class Common(Configuration):
         "PRECISION": 8,
     }
 
+    # Twilio Settings
+
     TWILIO = {
         "ACCOUNT_ID": os.getenv("ACCOUNT_ID_TWILIO"),
         "AUTH_TOKEN": os.getenv("TOKEN_TWILIO"),
