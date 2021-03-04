@@ -1,12 +1,15 @@
 import requests
 from django.urls import reverse
 from django.conf import settings
+from twilio.twiml.messaging_response import MessagingResponse
+from twilio.rest import Client
 from typing import Dict
 from blockcypher import (
     subscribe_to_address_webhook as subscribe_address_webhook,
     unsubscribe_from_webhook,
     list_webhooks as list_of_webhooks,
 )
+from app import messages
 
 
 def list_webhooks() -> Dict:
@@ -49,6 +52,66 @@ def get_current_rate(code="USD") -> Dict:
             "status_code": 500,
         }
     return response.json()
+
+
+class SmsClient:
+    def __init__(self):
+        account_sid = settings.TWILIO["ACCOUNT_ID"]
+        auth_token = settings.TWILIO["AUTH_TOKEN"]
+        self.client_twilio = Client(account_sid, auth_token)
+
+    def _make_sms(self, messages):
+        response_twiml = MessagingResponse()
+        for message, phone_number in messages:
+            response_twiml.message(body=message, to=phone_number)
+        return response_twiml
+
+    def create(self, from_phone_number):
+        sms = self._make_sms([(messages.USER_CREATED, from_phone_number)])
+        return str(sms)
+
+    def reload(self, from_phone_number, content_sms, step="start"):
+        sms = self._make_sms(
+            [(messages.USER_RELOAD_FUNDS[step] % content_sms, from_phone_number)]
+        )
+        return str(sms)
+
+    def pay(self, from_phone_number, content_sms, type):
+        sms = self._make_sms(
+            [(messages.USER_PAYMENT_INVOICE[type] % content_sms, from_phone_number)]
+        )
+        return str(sms)
+
+    def transfer(
+        self, from_phone_number, to_phone_number, content_sms_payer, content_sms_payee
+    ):
+        sms = self._make_sms(
+            [
+                (
+                    messages.USER_PAYMENT["successful_payer"] % content_sms_payer,
+                    from_phone_number,
+                ),
+                (
+                    messages.USER_PAYMENT["successful_payee"] % content_sms_payee,
+                    to_phone_number,
+                ),
+            ]
+        )
+        return str(sms)
+
+    def balance(self, from_phone_number, content_sms):
+        sms = self._make_sms([(messages.USER_BALANCE % content_sms, from_phone_number)])
+        return str(sms)
+
+    def help(self, from_phone_number):
+        sms = self._make_sms([(messages.HELP_MESSAGE, from_phone_number)])
+        return str(sms)
+
+    def error(self, message, from_phone_number, error_message):
+        sms = self._make_sms(
+            [(messages.ERROR_MESSAGES[error_message], from_phone_number)]
+        )
+        return str(sms)
 
 
 class LndRestClient:

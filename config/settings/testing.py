@@ -34,3 +34,9 @@ class Testing(Common):
 
     # Blockcypher Settings
     BLOCKCYPHER = {"TOKEN": "TOKEN", "COIN": "btc"}
+
+    # Twilio Settings
+    TWILIO = {
+        "ACCOUNT_ID": "a12345b",
+        "AUTH_TOKEN": "token",
+    }

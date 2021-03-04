@@ -22,6 +22,8 @@ requests = "*"
 django-phonenumber-field = "*"
 phonenumbers = "*"
 blockcypher = "*"
+twilio = "*"
+djangorestframework-xml = "*"
 
 [dev-packages]
 ipdb = "==0.13.4"
