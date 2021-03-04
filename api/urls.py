@@ -7,6 +7,7 @@ from .views import (
     GetWalletBalance,
     UserViewSet,
     RefillWebHook,
+    SmsWebhook,
     PaymentViewSet,
     InvoiceViewSet,
 )
@@ -34,6 +35,11 @@ urlpatterns = [
         r"^api/v1/webhooks/refill_address/(?P<address>[a-z0-9]+)/$",
         RefillWebHook.as_view(),
         name="wallet-refill",
+    ),
+    re_path(
+        r"^api/v1/webhooks/sms/$",
+        SmsWebhook.as_view(),
+        name="sms-receive",
     ),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

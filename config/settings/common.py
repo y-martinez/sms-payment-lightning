@@ -198,6 +198,7 @@ class Common(Configuration):
         "DEFAULT_RENDERER_CLASSES": (
             "rest_framework.renderers.JSONRenderer",
             "rest_framework.renderers.BrowsableAPIRenderer",
+            "rest_framework_xml.renderers.XMLRenderer",
         ),
         "DEFAULT_PERMISSION_CLASSES": [
             "rest_framework.permissions.AllowAny",
@@ -228,4 +229,9 @@ class Common(Configuration):
         "SAT_TO_BTC_FACTOR": 0.00000001,
         "BTC_TO_SAT_FACTOR": 100000000,
         "PRECISION": 8,
+    }
+
+    TWILIO = {
+        "ACCOUNT_ID": os.getenv("ACCOUNT_ID_TWILIO"),
+        "AUTH_TOKEN": os.getenv("TOKEN_TWILIO"),
     }

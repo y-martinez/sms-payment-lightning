@@ -1,8 +1,11 @@
+from django.http import HttpResponse
+from django.http.request import QueryDict
 from rest_framework import viewsets, status, generics, mixins, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from app.services import (
     LndRestClient,
+    SmsClient,
     get_current_rate,
     unsubscribe_webhook_address,
     subscribe_to_address_webhook,
@@ -18,6 +21,7 @@ from api.serializers import (
 
 
 client = LndRestClient()
+sms_client = SmsClient()
 
 
 class RefillWebHook(views.APIView):
@@ -56,6 +60,92 @@ class RefillWebHook(views.APIView):
                 {"message": "account could not be recharged"},
                 status=status.HTTP_304_NOT_MODIFIED,
             )
+
+
+class SmsWebhook(views.APIView):
+    def post(self, request, *args, **kwargs):
+        if isinstance(request.data, QueryDict):
+            data = request.data.dict()
+        else:
+            data = request.data
+
+        message = data["Body"].split()
+        from_phone_number = data["From"]
+        operation = message[0]
+
+        if operation.lower() == "crear":
+            if len(message) > 1:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                response = sms_client.create(from_phone_number)
+
+        elif operation.lower() == "recargar":
+            if len(message) > 1:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                content_sms = "tb1qyc39cgnk49umarnslj3ffmtq4lttyda82ju0vd"
+                response = sms_client.reload(from_phone_number, content_sms)
+
+        elif operation.lower() == "saldo":
+            if len(message) > 1:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                content_sms = (
+                    "0.05511200",
+                    "32512.54",
+                    "45112.00",
+                    "01/03/2021 4:00pm",
+                )
+                response = sms_client.balance(from_phone_number, content_sms)
+
+        elif operation.lower() == "pagar":
+            if len(message) != 2:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                content_sms = "0.00000500"
+                response = sms_client.pay(
+                    from_phone_number, content_sms, type="successful"
+                )
+
+        elif operation.lower() == "enviar":
+            if len(message) != 4:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                to_phone_number = message[3]
+                content_sms_payer = ("0.000042", "2.24", to_phone_number)
+                content_sms_payee = ("0.000042", "2.24")
+
+                response = sms_client.transfer(
+                    from_phone_number,
+                    to_phone_number,
+                    content_sms_payer,
+                    content_sms_payee,
+                )
+
+        elif operation.lower() == "ayuda":
+            if len(message) > 1:
+                response = sms_client.error(
+                    message, from_phone_number, error_message="operation_error"
+                )
+            else:
+                response = sms_client.help(from_phone_number)
+
+        else:
+            response = sms_client.error(
+                message, from_phone_number, error_message="operation_error"
+            )
+
+        return HttpResponse(response, content_type="application/xml; charset=utf-8")
 
 
 class GetWalletBalance(generics.RetrieveAPIView):
@@ -157,6 +247,8 @@ class UserViewSet(
         )
 
     def create(self, request, *args, **kwargs):
+        print("HOLAAA")
+        print(request.data.get("phone_number"))
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
